@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "./button";
+import request from "@/utils/api";
 // import { HelpCircle } from "lucide-react";
 
 export type ContactMethod = "email" | "phone";
@@ -25,14 +26,14 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().when("contactMethods", {
     is: (methods: string[]) => methods.includes("email"),
     then: (schema) =>
-      schema.email("Invalid email").required("Email is required"),
+      schema.email("Invalid email").required("Email is required")
   }),
   phoneNumber: Yup.string().when("contactMethods", {
     is: (methods: string[]) => methods.includes("phone"),
-    then: (schema) => schema.required("Phone number is required"),
+    then: (schema) => schema.required("Phone number is required")
   }),
   localGovernment: Yup.string().required("Local Government is required"),
-  area: Yup.string().required("Area is required"),
+  area: Yup.string().required("Area is required")
 });
 
 const initialValues: ServiceProviderForm = {
@@ -40,13 +41,49 @@ const initialValues: ServiceProviderForm = {
   service: "",
   contactMethods: [],
   localGovernment: "",
-  area: "",
+  area: ""
 };
 
 const ArtisanForm = () => {
-  const handleSubmit = (values: ServiceProviderForm) => {
-    console.log(values);
-    // Handle form submission here
+  const [isLoading, setIsLoading] = React.useState(false);
+  const handleSubmit = async (
+    values: ServiceProviderForm,
+    {
+      setSubmitting,
+      resetForm
+    }: {
+      setSubmitting: (isSubmitting: boolean) => void;
+      resetForm: () => void;
+    }
+  ) => {
+    setIsLoading(true);
+    // Post the form data to the API
+    try {
+      const response = await request(
+        "POST",
+        `/artisan-forms`,
+        {
+          firstName: values.name,
+          lastName: values.name,
+          email: values.email,
+          phone: values.phoneNumber,
+          emailOrPhone: true,
+          serviceType: values.service,
+          serviceLocalGov: values.localGovernment,
+          serviceArea: values.area
+        },
+        true,
+        true,
+        "Your details have been submitted successfully. We will contact you shortly."
+      );
+      setIsLoading(false);
+      console.log("Form submitted successfully:", response.data);
+      resetForm();
+    } catch (error) {
+      setIsLoading(false);
+
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (
@@ -54,8 +91,7 @@ const ArtisanForm = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
+        onSubmit={handleSubmit}>
         {({ values, errors, touched, isValid, dirty }) => (
           <Form className="space-y-6 bg-white font-satoshi w-11/12">
             <div>
@@ -203,9 +239,10 @@ const ArtisanForm = () => {
 
             <Button
               type="submit"
-              disabled={!(isValid && dirty)}
-              className="w-full py-4 bg-gray-200 text-gray-400 rounded-lg font-medium text-xl transition-colors duration-200 hover:bg-blue-600 hover:text-white disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-            >
+              disabled={!isValid || !dirty}
+              isLoading={isLoading}
+              loadingText="Submitting..."
+              className="w-full py-4 bg-gray-200 text-gray-400 rounded-lg font-medium text-xl transition-colors duration-200 hover:bg-blue-600 hover:text-white disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
               Register
             </Button>
           </Form>

@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "./button";
+import request from "@/utils/api";
 // import { ArrowLeft, HelpCircle } from "lucide-react";
 
 export type ArtisanType =
@@ -76,9 +77,46 @@ const initialValues: ArtisanRequestForm = {
 };
 
 const PatronForm = () => {
-  const handleSubmit = (values: ArtisanRequestForm) => {
-    console.log(values);
-    // Handle form submission here
+ const [isLoading, setIsLoading] = React.useState(false);
+
+   const handleSubmit = async (
+    values: ArtisanRequestForm,
+    {
+      setSubmitting,
+      resetForm
+    }: {
+      setSubmitting: (isSubmitting: boolean) => void;
+      resetForm: () => void;
+    }
+  ) => {
+    setIsLoading(true);
+    // Post the form data to the API
+    try {
+      const response = await request(
+        "POST",
+        `/artisan-forms`,
+        {
+          firstName: values.name,
+          lastName: values.name,
+          email: values.email,
+          phone: values.phoneNumber,
+          emailOrPhone: true,
+          serviceType: values.service,
+          serviceLocalGov: values.localGovernment,
+          serviceArea: values.area
+        },
+        true,
+        true,
+        "Your details have been submitted successfully. We will contact you shortly."
+      );
+      setIsLoading(false);
+      console.log("Form submitted successfully:", response.data);
+      resetForm();
+    } catch (error) {
+      setIsLoading(false);
+
+      console.error("Error submitting form:", error);
+    }
   };
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
