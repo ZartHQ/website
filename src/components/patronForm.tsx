@@ -41,7 +41,7 @@ const artisanTypes: ArtisanType[] = [
   "Painter",
   "Plumber",
   "Starlink Installer",
-  "Other",
+  "Other"
 ];
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -50,7 +50,7 @@ const validationSchema = Yup.object().shape({
     .required("Please select an artisan type"),
   otherArtisanType: Yup.string().when("artisanTypes", {
     is: (types: string[]) => types.includes("Other"),
-    then: (schema) => schema.required("Please specify the artisan type"),
+    then: (schema) => schema.required("Please specify the artisan type")
   }),
   contactMethods: Yup.array()
     .min(1, "Please select at least one contact method")
@@ -58,14 +58,14 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().when("contactMethods", {
     is: (methods: string[]) => methods.includes("email"),
     then: (schema) =>
-      schema.email("Invalid email").required("Email is required"),
+      schema.email("Invalid email").required("Email is required")
   }),
   phoneNumber: Yup.string().when("contactMethods", {
     is: (methods: string[]) => methods.includes("phone"),
-    then: (schema) => schema.required("Phone number is required"),
+    then: (schema) => schema.required("Phone number is required")
   }),
   localGovernment: Yup.string().required("Local Government is required"),
-  area: Yup.string().required("Area is required"),
+  area: Yup.string().required("Area is required")
 });
 
 const initialValues: ArtisanRequestForm = {
@@ -73,13 +73,13 @@ const initialValues: ArtisanRequestForm = {
   artisanTypes: [],
   contactMethods: [],
   localGovernment: "",
-  area: "",
+  area: ""
 };
 
 const PatronForm = () => {
- const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-   const handleSubmit = async (
+  const handleSubmit = async (
     values: ArtisanRequestForm,
     {
       setSubmitting,
@@ -101,7 +101,7 @@ const PatronForm = () => {
           email: values.email,
           phone: values.phoneNumber,
           emailOrPhone: true,
-          serviceType: values.service,
+          // serviceType: values.service,
           serviceLocalGov: values.localGovernment,
           serviceArea: values.area
         },
@@ -124,8 +124,9 @@ const PatronForm = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
+        onSubmit={() => {
+          console.log("Form submitted successfully");
+        }}>
         {({ values, errors, touched, isValid, dirty }) => (
           <Form className="space-y-6 bg-white font-satoshi w-11/12 ">
             <div>
@@ -294,8 +295,7 @@ const PatronForm = () => {
             <Button
               type="submit"
               disabled={!(isValid && dirty)}
-              className="w-full bg-[#FFC92A] text-[#115746] py-3 px-6 rounded-lg font-medium transition-colors duration-200 cursor-pointer disabled:bg-[#E9E9EB] disabled:text-[#B1B1B2] disabled:cursor-not-allowed"
-            >
+              className="w-full bg-[#FFC92A] text-[#115746] py-3 px-6 rounded-lg font-medium transition-colors duration-200 cursor-pointer disabled:bg-[#E9E9EB] disabled:text-[#B1B1B2] disabled:cursor-not-allowed">
               Request artisan
             </Button>
           </Form>
