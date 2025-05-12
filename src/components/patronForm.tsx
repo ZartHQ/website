@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "./button";
+import request from "@/utils/api";
 // import { ArrowLeft, HelpCircle } from "lucide-react";
 
 export type ArtisanType =
@@ -40,7 +41,7 @@ const artisanTypes: ArtisanType[] = [
   "Painter",
   "Plumber",
   "Starlink Installer",
-  "Other",
+  "Other"
 ];
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -49,7 +50,7 @@ const validationSchema = Yup.object().shape({
     .required("Please select an artisan type"),
   otherArtisanType: Yup.string().when("artisanTypes", {
     is: (types: string[]) => types.includes("Other"),
-    then: (schema) => schema.required("Please specify the artisan type"),
+    then: (schema) => schema.required("Please specify the artisan type")
   }),
   contactMethods: Yup.array()
     .min(1, "Please select at least one contact method")
@@ -57,14 +58,14 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().when("contactMethods", {
     is: (methods: string[]) => methods.includes("email"),
     then: (schema) =>
-      schema.email("Invalid email").required("Email is required"),
+      schema.email("Invalid email").required("Email is required")
   }),
   phoneNumber: Yup.string().when("contactMethods", {
     is: (methods: string[]) => methods.includes("phone"),
-    then: (schema) => schema.required("Phone number is required"),
+    then: (schema) => schema.required("Phone number is required")
   }),
   localGovernment: Yup.string().required("Local Government is required"),
-  area: Yup.string().required("Area is required"),
+  area: Yup.string().required("Area is required")
 });
 
 const initialValues: ArtisanRequestForm = {
@@ -72,13 +73,50 @@ const initialValues: ArtisanRequestForm = {
   artisanTypes: [],
   contactMethods: [],
   localGovernment: "",
-  area: "",
+  area: ""
 };
 
 const PatronForm = () => {
-  const handleSubmit = (values: ArtisanRequestForm) => {
-    console.log(values);
-    // Handle form submission here
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleSubmit = async (
+    values: ArtisanRequestForm,
+    {
+      setSubmitting,
+      resetForm
+    }: {
+      setSubmitting: (isSubmitting: boolean) => void;
+      resetForm: () => void;
+    }
+  ) => {
+    setIsLoading(true);
+    // Post the form data to the API
+    try {
+      const response = await request(
+        "POST",
+        `/artisan-forms`,
+        {
+          firstName: values.name,
+          lastName: values.name,
+          email: values.email,
+          phone: values.phoneNumber,
+          emailOrPhone: true,
+          // serviceType: values.service,
+          serviceLocalGov: values.localGovernment,
+          serviceArea: values.area
+        },
+        true,
+        true,
+        "Your details have been submitted successfully. We will contact you shortly."
+      );
+      setIsLoading(false);
+      console.log("Form submitted successfully:", response.data);
+      resetForm();
+    } catch (error) {
+      setIsLoading(false);
+
+      console.error("Error submitting form:", error);
+    }
   };
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
@@ -86,8 +124,9 @@ const PatronForm = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
+        onSubmit={() => {
+          console.log("Form submitted successfully");
+        }}>
         {({ values, errors, touched, isValid, dirty }) => (
           <Form className="space-y-6 bg-white font-satoshi w-11/12 ">
             <div>
@@ -256,8 +295,7 @@ const PatronForm = () => {
             <Button
               type="submit"
               disabled={!(isValid && dirty)}
-              className="w-full bg-[#FFC92A] text-[#115746] py-3 px-6 rounded-lg font-medium transition-colors duration-200 cursor-pointer disabled:bg-[#E9E9EB] disabled:text-[#B1B1B2] disabled:cursor-not-allowed"
-            >
+              className="w-full bg-[#FFC92A] text-[#115746] py-3 px-6 rounded-lg font-medium transition-colors duration-200 cursor-pointer disabled:bg-[#E9E9EB] disabled:text-[#B1B1B2] disabled:cursor-not-allowed">
               Request artisan
             </Button>
           </Form>
