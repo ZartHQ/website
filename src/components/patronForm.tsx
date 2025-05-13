@@ -1,74 +1,67 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Button } from "./button";  // Assuming you have this component
+import { Button } from "./button";
 import request from "@/utils/api";
 
-// Areas data for the dropdown based on location selection
-const areasData = {
-  "Lagos mainland": [
-    "Agege",
-    "Ajeromi-Ifelodun",
-    "Alimosho",
-    "Amuwo-Odofin",
-    "Apapa",
-    "Ifako-Ijaiye",
-    "Ikeja",
-    "Kosofe",
-    "Mushin",
-    "Oshodi-Isolo",
-    "Shomolu",
-    "Surulere"
-  ],
-  "Lagos Island": [
-    "Eti-Osa",
-    "Lagos Island",
-    "Ikoyi",
-    "Victoria Island",
-    "Lekki",
-    "Ajah",
-    "Epe"
-  ]
-};
+export type ArtisanType = 
+  | "Carpenter" 
+  | "Electrician" 
+  | "Plumber" 
+  | "Cleaner" 
+  | "Other";
 
-// Service types offered
-const serviceTypes = [
+export type Location = "Lagos mainland" | "Lagos Island";
+
+export interface ArtisanRequestForm {
+  fullName: string;
+  location: Location;
+  phoneNumber: string;
+  email: string;
+  artisanTypes: ArtisanType[];
+  otherArtisanType?: string;
+  badExperience?: string;
+  earlyAccess: "Yes, absolutely" | "Maybe later" | "Not interested" | "";
+}
+
+const artisanTypes: ArtisanType[] = [
   "Carpenter",
   "Electrician",
   "Plumber",
   "Cleaner",
-  "Others"
+  "Other"
 ];
 
-// Validation schema
 const validationSchema = Yup.object().shape({
   fullName: Yup.string().required("Full name is required"),
-  location: Yup.string().required("Location is required"),
-  phoneNumber: Yup.string().nullable(),
-  email: Yup.string().email("Invalid email format").nullable(),
-  service: Yup.string().required("Please specify the service you offer"),
+  location: Yup.string().required("Please select a location"),
+  phoneNumber: Yup.string().required("Phone number is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  artisanTypes: Yup.array()
+    .min(1, "Please select at least one artisan type")
+    .required("Please select an artisan type"),
+  otherArtisanType: Yup.string().when("artisanTypes", {
+    is: (types: string[]) => types?.includes("Other"),
+    then: (schema) => schema.required("Please specify the artisan type")
+  }),
   earlyAccess: Yup.string().required("Please select an option")
 });
 
-// Initial form values
-const initialValues = {
+const initialValues: ArtisanRequestForm = {
   fullName: "",
-  location: "",
+  location: "Lagos mainland",
   phoneNumber: "",
   email: "",
-  service: "",
-  otherService: "",
+  artisanTypes: [],
   badExperience: "",
-  earlyAccess: "",
-  area: ""
+  earlyAccess: ""
 };
 
-const ArtisanForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [areas, setAreas] = useState<string[]>([]);
+const PatronForm = () => {
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleSubmit = async (
-    values: any,
+    values: ArtisanRequestForm,
     {
       setSubmitting,
       resetForm
@@ -78,71 +71,50 @@ const ArtisanForm = () => {
     }
   ) => {
     setIsLoading(true);
+    // Post the form data to the API
     try {
-      const formData = {
-        fullName: values.fullName,
-        location: values.location,
-        email: values.email || "",
-        phone: values.phoneNumber || "",
-        artisanType: values.service,
-        otherArtisanType: values.otherService || "",
-        badExperienceDetails: values.badExperience || "",
-        earlyAccess: values.earlyAccess,
-        area: values.area
-      };
-  
-      const response = await fetch("https://formspree.io/f/xdkgpznl", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json"
+      const response = await request(
+        "POST",
+        `/artisan-forms`,
+        {
+          fullName: values.fullName,
+          location: values.location,
+          phoneNumber: values.phoneNumber,
+          email: values.email,
+          artisanTypes: values.artisanTypes,
+          otherArtisanType: values.otherArtisanType,
+          badExperience: values.badExperience,
+          earlyAccess: values.earlyAccess
         },
-        body: JSON.stringify(formData)
-      });
-  
-      if (!response.ok) throw new Error("Form submission failed");
-  
-      const result = await response.json();
-      console.log("Form submitted successfully:", result);
-      alert("Your details have been submitted successfully. We'll notify you when ZART launches!");
+        true,
+        true,
+        "Thank you for joining the waitlist! We'll be in touch soon."
+      );
+      setIsLoading(false);
+      console.log("Form submitted successfully:", response.data);
       resetForm();
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("There was an error submitting your form. Please try again later.");
-    } finally {
       setIsLoading(false);
-      setSubmitting(false);
+      console.error("Error submitting form:", error);
     }
   };
-
+  
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ values, errors, touched, isValid, dirty, setFieldValue }) => {
-          // Update areas when location changes
-          useEffect(() => {
-            if (values.location) {
-              setAreas(areasData[values.location as keyof typeof areasData] || []);
-            } else {
-              setAreas([]);
-            }
-          }, [values.location]);
-
-          return (
-            <Form className="space-y-6 bg-white font-sans w-full max-w-lg p-6">
-              {/* Full Name */}
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}>
+          {({ values, isValid, dirty }) => (
+            <Form className="space-y-6 bg-white font-sans">
               <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
+                <label className="block text-gray-800 font-semibold mb-2">
                   Full name
                 </label>
                 <Field
                   type="text"
                   name="fullName"
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Placeholder text"
                 />
                 <ErrorMessage
@@ -152,29 +124,28 @@ const ArtisanForm = () => {
                 />
               </div>
 
-              {/* Location */}
               <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
+                <label className="block text-gray-800 font-semibold mb-2">
                   Location
                 </label>
-                <div className="flex gap-4">
-                  <label className="flex items-center space-x-2">
+                <div className="flex space-x-4">
+                  <label className="inline-flex items-center">
                     <Field
                       type="radio"
                       name="location"
                       value="Lagos mainland"
-                      className="h-4 w-4 text-blue-600"
+                      className="form-radio"
                     />
-                    <span className="text-gray-700">Lagos mainland</span>
+                    <span className="ml-2">Lagos mainland</span>
                   </label>
-                  <label className="flex items-center space-x-2">
+                  <label className="inline-flex items-center">
                     <Field
                       type="radio"
                       name="location"
                       value="Lagos Island"
-                      className="h-4 w-4 text-blue-600"
+                      className="form-radio"
                     />
-                    <span className="text-gray-700">Lagos Island</span>
+                    <span className="ml-2">Lagos Island</span>
                   </label>
                 </div>
                 <ErrorMessage
@@ -184,118 +155,126 @@ const ArtisanForm = () => {
                 />
               </div>
 
-              {/* Area Dropdown - Only shows when location is selected */}
-              {values.location && (
+              <div>
+                <label className="block text-gray-800 font-semibold mb-2">
+                  Phone number (WhatsApp preferred)
+                </label>
+                <Field
+                  type="tel"
+                  name="phoneNumber"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Placeholder text"
+                />
+                <ErrorMessage
+                  name="phoneNumber"
+                  component="div"
+                  className="text-red-500 mt-1 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-800 font-semibold mb-2">
+                  Email address
+                </label>
+                <Field
+                  type="email"
+                  name="email"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Placeholder text"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 mt-1 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-800 font-semibold mb-2">
+                  What kind of artisan do you usually need help with?
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {artisanTypes.map((type) => (
+                    <label key={type} className="inline-flex items-center">
+                      <Field
+                        type="checkbox"
+                        name="artisanTypes"
+                        value={type}
+                        className="form-checkbox"
+                      />
+                      <span className="ml-2">{type}</span>
+                    </label>
+                  ))}
+                </div>
+                <ErrorMessage
+                  name="artisanTypes"
+                  component="div"
+                  className="text-red-500 mt-1 text-sm"
+                />
+              </div>
+
+              {values.artisanTypes?.includes("Other") && (
                 <div>
-                  <label className="block text-gray-800 text-lg font-medium mb-2">
-                    Area
+                  <label className="block text-gray-800 font-semibold mb-2">
+                    Others (specify)
                   </label>
                   <Field
-                    as="select"
-                    name="area"
-                    className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select an area</option>
-                    {areas.map((area) => (
-                      <option key={area} value={area}>
-                        {area}
-                      </option>
-                    ))}
-                  </Field>
+                    type="text"
+                    name="otherArtisanType"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Specify artisan type"
+                  />
                   <ErrorMessage
-                    name="area"
+                    name="otherArtisanType"
                     component="div"
                     className="text-red-500 mt-1 text-sm"
                   />
                 </div>
               )}
 
-              {/* Phone Number */}
               <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
-                  Phone number (WhatsApp preferred)
+                <label className="block text-gray-800 font-semibold mb-2">
+                  Have you ever had a bad experience with an artisan?
                 </label>
                 <Field
-                  type="tel"
-                  name="phoneNumber"
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Placeholder text"
-                />
-                <ErrorMessage
-                  name="phoneNumber"
-                  component="div"
-                  className="text-red-500 mt-1 text-sm"
+                  as="textarea"
+                  name="badExperience"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-24"
+                  placeholder="Feel free to share — we're solving this!"
                 />
               </div>
 
-              {/* Email Address */}
               <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
-                  Email address
-                </label>
-                <Field
-                  type="email"
-                  name="email"
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Placeholder text"
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500 mt-1 text-sm"
-                />
-              </div>
-
-              {/* What service do you offer? */}
-              <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
-                  What service do you offer?
-                </label>
-                <Field
-                  type="text"
-                  name="service"
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Placeholder text"
-                />
-                <ErrorMessage
-                  name="service"
-                  component="div"
-                  className="text-red-500 mt-1 text-sm"
-                />
-              </div>
-
-              {/* Early Access */}
-              <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
+                <label className="block text-gray-800 font-semibold mb-2">
                   Would you like early access when ZART launches?
                 </label>
-                <div className="flex gap-4">
-                  <label className="flex items-center space-x-2">
+                <div className="flex space-x-4">
+                  <label className="inline-flex items-center">
                     <Field
                       type="radio"
                       name="earlyAccess"
                       value="Yes, absolutely"
-                      className="h-4 w-4 text-blue-600"
+                      className="form-radio"
                     />
-                    <span className="text-gray-700">Yes, absolutely</span>
+                    <span className="ml-2">Yes, absolutely</span>
                   </label>
-                  <label className="flex items-center space-x-2">
+                  <label className="inline-flex items-center">
                     <Field
                       type="radio"
                       name="earlyAccess"
                       value="Maybe later"
-                      className="h-4 w-4 text-blue-600"
+                      className="form-radio"
                     />
-                    <span className="text-gray-700">Maybe later</span>
+                    <span className="ml-2">Maybe later</span>
                   </label>
-                  <label className="flex items-center space-x-2">
+                  <label className="inline-flex items-center">
                     <Field
                       type="radio"
                       name="earlyAccess"
                       value="Not interested"
-                      className="h-4 w-4 text-blue-600"
+                      className="form-radio"
                     />
-                    <span className="text-gray-700">Not interested</span>
+                    <span className="ml-2">Not interested</span>
                   </label>
                 </div>
                 <ErrorMessage
@@ -305,20 +284,17 @@ const ArtisanForm = () => {
                 />
               </div>
 
-              {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={!(isValid && dirty) || isLoading}
-                className="w-full bg-gray-200 text-gray-500 py-3 rounded-lg font-medium transition-colors duration-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400"
-              >
+                className="w-full bg-gray-200 text-gray-800 py-3 px-6 rounded-lg font-medium transition-colors duration-200 cursor-pointer hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
                 {isLoading ? "Submitting..." : "Join the waitlist"}
               </Button>
             </Form>
-          );
-        }}
-      </Formik>
-    </div>
+          )}
+        </Formik>
+      </div>
   );
 };
 
-export default ArtisanForm;
+export default PatronForm;
