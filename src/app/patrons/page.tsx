@@ -16,7 +16,7 @@ const PatronPage = () => {
         <HeroContent content={PATRON_CONTENT} />
       </div>
 
-      <SkyLine />
+      <SkyLine selectedForm="patron" />
 
       <div className="absolute bottom-0 left-0 right-0 bg-transparent">
         <MarqueeText

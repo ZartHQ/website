@@ -16,7 +16,7 @@ const ArtisanPage = () => {
         <HeroContent content={ARTISAN_CONTENT} />
       </div>
 
-      <SkyLine />
+      <SkyLine selectedForm="artisan"/>
 
       <div className="absolute bottom-0 left-0 right-0 bg-transparent">
         <MarqueeText

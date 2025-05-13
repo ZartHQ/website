@@ -34,7 +34,7 @@ const PatronFormPage = () => {
         </div>
       </div>
       <div className="absolute bottom-0 w-full">
-        <FormSkyLine />
+         <FormSkyLine selectedForm="patron"/>
       </div>
     </div>
   );
