@@ -24,8 +24,7 @@ const ArtisanFormPage = () => {
             We go run am
           </h1>
           <p className="text-[#323233] text-base md:text-xl mb-8">
-            Register as an artisan and get matched to customers that need your
-            service. Meet more people and make more money.
+            Sign up as an artisan and get matched with real people who need what you do best.
           </p>
         </div>
         <div className="w-full md:w-[600px] h-full md:min-h-[770px] bg-white shadow-2xl rounded-xl py-8 px-4 z-10">

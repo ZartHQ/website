@@ -1,86 +1,74 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Button } from "./button";
+import { Button } from "./button";  // Assuming you have this component
 import request from "@/utils/api";
-// import { ArrowLeft, HelpCircle } from "lucide-react";
 
-export type ArtisanType =
-  | "Bricklayer"
-  | "Carpenter"
-  | "Cook"
-  | "Electrician"
-  | "Hairdresser"
-  | "Locfician"
-  | "Mechanic"
-  | "Painter"
-  | "Plumber"
-  | "Starlink Installer"
-  | "Other";
+// Areas data for the dropdown based on location selection
+const areasData = {
+  "Lagos mainland": [
+    "Agege",
+    "Ajeromi-Ifelodun",
+    "Alimosho",
+    "Amuwo-Odofin",
+    "Apapa",
+    "Ifako-Ijaiye",
+    "Ikeja",
+    "Kosofe",
+    "Mushin",
+    "Oshodi-Isolo",
+    "Shomolu",
+    "Surulere"
+  ],
+  "Lagos Island": [
+    "Eti-Osa",
+    "Lagos Island",
+    "Ikoyi",
+    "Victoria Island",
+    "Lekki",
+    "Ajah",
+    "Epe"
+  ]
+};
 
-export type ContactMethod = "email" | "phone";
-
-export interface ArtisanRequestForm {
-  name: string;
-  artisanTypes: ArtisanType[];
-  otherArtisanType?: string;
-  contactMethods: ContactMethod[];
-  email?: string;
-  phoneNumber?: string;
-  localGovernment: string;
-  area: string;
-}
-const artisanTypes: ArtisanType[] = [
-  "Bricklayer",
+// Service types offered
+const serviceTypes = [
   "Carpenter",
-  "Cook",
   "Electrician",
-  "Hairdresser",
-  "Locfician",
-  "Mechanic",
-  "Painter",
   "Plumber",
-  "Starlink Installer",
-  "Other"
+  "Cleaner",
+  "Others"
 ];
+
+// Validation schema
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
-  artisanTypes: Yup.array()
-    .min(1, "Please select at least one artisan type")
-    .required("Please select an artisan type"),
-  otherArtisanType: Yup.string().when("artisanTypes", {
-    is: (types: string[]) => types.includes("Other"),
-    then: (schema) => schema.required("Please specify the artisan type")
-  }),
-  contactMethods: Yup.array()
-    .min(1, "Please select at least one contact method")
-    .required("Please select a contact method"),
-  email: Yup.string().when("contactMethods", {
-    is: (methods: string[]) => methods.includes("email"),
-    then: (schema) =>
-      schema.email("Invalid email").required("Email is required")
-  }),
-  phoneNumber: Yup.string().when("contactMethods", {
-    is: (methods: string[]) => methods.includes("phone"),
-    then: (schema) => schema.required("Phone number is required")
-  }),
-  localGovernment: Yup.string().required("Local Government is required"),
-  area: Yup.string().required("Area is required")
+  fullName: Yup.string().required("Full name is required"),
+  location: Yup.string().required("Location is required"),
+  phoneNumber: Yup.string().nullable(),
+  email: Yup.string().email("Invalid email format").nullable(),
+  service: Yup.string().required("Please specify the service you offer"),
+  earlyAccess: Yup.string().required("Please select an option")
 });
 
-const initialValues: ArtisanRequestForm = {
-  name: "",
-  artisanTypes: [],
-  contactMethods: [],
-  localGovernment: "",
+// Initial form values
+const initialValues = {
+  fullName: "",
+  location: "",
+  phoneNumber: "",
+  email: "",
+  service: "",
+  otherService: "",
+  badExperience: "",
+  earlyAccess: "",
   area: ""
 };
 
-const PatronForm = () => {
-  const [isLoading, setIsLoading] = React.useState(false);
+const ArtisanForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [areas, setAreas] = useState<string[]>([]);
 
   const handleSubmit = async (
-    values: ArtisanRequestForm,
+    values: any,
     {
       setSubmitting,
       resetForm
@@ -90,158 +78,148 @@ const PatronForm = () => {
     }
   ) => {
     setIsLoading(true);
-    // Post the form data to the API
     try {
-      const response = await request(
-        "POST",
-        `/artisan-forms`,
-        {
-          firstName: values.name,
-          lastName: values.name,
-          email: values.email,
-          phone: values.phoneNumber,
-          emailOrPhone: true,
-          // serviceType: values.service,
-          serviceLocalGov: values.localGovernment,
-          serviceArea: values.area
+      const formData = {
+        fullName: values.fullName,
+        location: values.location,
+        email: values.email || "",
+        phone: values.phoneNumber || "",
+        artisanType: values.service,
+        otherArtisanType: values.otherService || "",
+        badExperienceDetails: values.badExperience || "",
+        earlyAccess: values.earlyAccess,
+        area: values.area
+      };
+  
+      const response = await fetch("https://formspree.io/f/xdkgpznl", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
         },
-        true,
-        true,
-        "Your details have been submitted successfully. We will contact you shortly."
-      );
-      setIsLoading(false);
-      console.log("Form submitted successfully:", response.data);
+        body: JSON.stringify(formData)
+      });
+  
+      if (!response.ok) throw new Error("Form submission failed");
+  
+      const result = await response.json();
+      console.log("Form submitted successfully:", result);
+      alert("Your details have been submitted successfully. We'll notify you when ZART launches!");
       resetForm();
     } catch (error) {
-      setIsLoading(false);
-
       console.error("Error submitting form:", error);
+      alert("There was an error submitting your form. Please try again later.");
+    } finally {
+      setIsLoading(false);
+      setSubmitting(false);
     }
   };
+
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
-      {" "}
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={() => {
-          console.log("Form submitted successfully");
-        }}>
-        {({ values, errors, touched, isValid, dirty }) => (
-          <Form className="space-y-6 bg-white font-satoshi w-11/12 ">
-            <div>
-              <label className="block text-[#000C19] text-xl font-bold mb-2 font-satoshi">
-                What is your name?
-              </label>
-              <Field
-                type="text"
-                name="name"
-                className="w-full h-[54px] px-4 py-2 border border-gray-300 rounded-lg focus:outline focus:outline-[#084E61] focus:border-[#084E61]"
-                placeholder="Enter your name"
-              />
-              <ErrorMessage
-                name="name"
-                component="div"
-                className="text-red-500 mt-1 text-sm"
-              />
-            </div>
+        onSubmit={handleSubmit}
+      >
+        {({ values, errors, touched, isValid, dirty, setFieldValue }) => {
+          // Update areas when location changes
+          useEffect(() => {
+            if (values.location) {
+              setAreas(areasData[values.location as keyof typeof areasData] || []);
+            } else {
+              setAreas([]);
+            }
+          }, [values.location]);
 
-            <div>
-              <label className="block text-[#000C19] text-xl font-bold mb-2 font-satoshi">
-                What artisan do you need?
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {artisanTypes.map((type) => (
-                  <label key={type} className="flex items-center space-x-2">
-                    <Field
-                      type="checkbox"
-                      name="artisanTypes"
-                      value={type}
-                      className="rounded border-gray-300 focus:ring-[#084E61] accent-[#084E61]"
-                    />
-
-                    <span className="text-gray-700 font-satoshi">{type}</span>
-                  </label>
-                ))}
-              </div>
-              <ErrorMessage
-                name="artisanTypes"
-                component="div"
-                className="text-red-500 mt-1 text-sm"
-              />
-            </div>
-
-            {values.artisanTypes.includes("Other") && (
+          return (
+            <Form className="space-y-6 bg-white font-sans w-full max-w-lg p-6">
+              {/* Full Name */}
               <div>
+                <label className="block text-gray-800 text-lg font-medium mb-2">
+                  Full name
+                </label>
                 <Field
                   type="text"
-                  name="otherArtisanType"
-                  className="w-full h-[54px] px-4 py-2 border border-gray-300 rounded-lg focus:outline focus:outline-[#084E61] focus:border-[#084E61]"
-                  placeholder="Please specify the artisan type"
+                  name="fullName"
+                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Placeholder text"
                 />
                 <ErrorMessage
-                  name="otherArtisanType"
+                  name="fullName"
                   component="div"
                   className="text-red-500 mt-1 text-sm"
                 />
               </div>
-            )}
 
-            <div>
-              <label className="block text-[#000C19] text-xl font-bold mb-2 font-satoshi">
-                How should we contact you?
-              </label>
-              <div className="space-y-2">
-                <label className="flex items-center space-x-2">
-                  <Field
-                    type="checkbox"
-                    name="contactMethods"
-                    value="email"
-                    className="rounded border-gray-300 focus:ring-[#084E61] accent-[#084E61]"
-                  />
-                  <span className="text-gray-700 font-satoshi">Email</span>
-                </label>
-                {values.contactMethods.includes("email") && (
-                  <div>
-                    <Field
-                      type="email"
-                      name="email"
-                      className="w-full h-[54px] px-4 py-2 border border-gray-300 rounded-lg focus:outline focus:outline-[#084E61] focus:border-[#084E61]"
-                      placeholder="Enter your email"
-                    />
-                    <ErrorMessage
-                      name="email"
-                      component="div"
-                      className="text-red-500 mt-1 text-sm"
-                    />
-                  </div>
-                )}
-                <label className="flex items-center space-x-2">
-                  <Field
-                    type="checkbox"
-                    name="contactMethods"
-                    value="phone"
-                    className="rounded border-gray-300 focus:ring-[#084E61] accent-[#084E61]"
-                  />
-                  <span className="text-gray-700 font-satoshi">
-                    Phone Number
-                  </span>
-                </label>
-              </div>
-              <ErrorMessage
-                name="contactMethods"
-                component="div"
-                className="text-red-500 mt-1 text-sm"
-              />
-            </div>
-
-            {values.contactMethods.includes("phone") && (
+              {/* Location */}
               <div>
+                <label className="block text-gray-800 text-lg font-medium mb-2">
+                  Location
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center space-x-2">
+                    <Field
+                      type="radio"
+                      name="location"
+                      value="Lagos mainland"
+                      className="h-4 w-4 text-blue-600"
+                    />
+                    <span className="text-gray-700">Lagos mainland</span>
+                  </label>
+                  <label className="flex items-center space-x-2">
+                    <Field
+                      type="radio"
+                      name="location"
+                      value="Lagos Island"
+                      className="h-4 w-4 text-blue-600"
+                    />
+                    <span className="text-gray-700">Lagos Island</span>
+                  </label>
+                </div>
+                <ErrorMessage
+                  name="location"
+                  component="div"
+                  className="text-red-500 mt-1 text-sm"
+                />
+              </div>
+
+              {/* Area Dropdown - Only shows when location is selected */}
+              {values.location && (
+                <div>
+                  <label className="block text-gray-800 text-lg font-medium mb-2">
+                    Area
+                  </label>
+                  <Field
+                    as="select"
+                    name="area"
+                    className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select an area</option>
+                    {areas.map((area) => (
+                      <option key={area} value={area}>
+                        {area}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage
+                    name="area"
+                    component="div"
+                    className="text-red-500 mt-1 text-sm"
+                  />
+                </div>
+              )}
+
+              {/* Phone Number */}
+              <div>
+                <label className="block text-gray-800 text-lg font-medium mb-2">
+                  Phone number (WhatsApp preferred)
+                </label>
                 <Field
                   type="tel"
                   name="phoneNumber"
-                  className="w-full h-[54px] px-4 py-2 border border-gray-300 rounded-lg focus:outline focus:outline-[#084E61] focus:border-[#084E61]"
-                  placeholder="Enter your phone number"
+                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Placeholder text"
                 />
                 <ErrorMessage
                   name="phoneNumber"
@@ -249,60 +227,98 @@ const PatronForm = () => {
                   className="text-red-500 mt-1 text-sm"
                 />
               </div>
-            )}
 
-            <div>
-              <div className="flex items-center mb-2">
-                <label className="block text-[#000C19] text-xl font-satoshi font-bold mb-2">
-                  Where do you need the service?
+              {/* Email Address */}
+              <div>
+                <label className="block text-gray-800 text-lg font-medium mb-2">
+                  Email address
                 </label>
-                {/* <HelpCircle className="w-4 h-4 ml-2 text-gray-400" /> */}
+                <Field
+                  type="email"
+                  name="email"
+                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Placeholder text"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 mt-1 text-sm"
+                />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[#152F22] text-[14px] font-satoshi mb-2">
-                    Local Government
-                  </label>
-                  <Field
-                    type="text"
-                    name="localGovernment"
-                    className="w-full h-[54px] px-4 py-2 border border-gray-300 rounded-lg focus:outline focus:outline-[#084E61] focus:border-[#084E61]"
-                  />
-                  <ErrorMessage
-                    name="localGovernment"
-                    component="div"
-                    className="text-red-500 mt-1 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[#152F22] font-satoshi text-[14px] mb-2">
-                    Area (example: Igando, Marina, etc)
-                  </label>
-                  <Field
-                    type="text"
-                    name="area"
-                    className="w-full h-[54px] px-4 py-2 border border-gray-300 rounded-lg focus:outline focus:outline-[#084E61] focus:border-[#084E61]"
-                  />
-                  <ErrorMessage
-                    name="area"
-                    component="div"
-                    className="text-red-500 mt-1 text-sm"
-                  />
-                </div>
-              </div>
-            </div>
 
-            <Button
-              type="submit"
-              disabled={!(isValid && dirty)}
-              className="w-full bg-[#FFC92A] text-[#115746] py-3 px-6 rounded-lg font-medium transition-colors duration-200 cursor-pointer disabled:bg-[#E9E9EB] disabled:text-[#B1B1B2] disabled:cursor-not-allowed">
-              Request artisan
-            </Button>
-          </Form>
-        )}
+              {/* What service do you offer? */}
+              <div>
+                <label className="block text-gray-800 text-lg font-medium mb-2">
+                  What service do you offer?
+                </label>
+                <Field
+                  type="text"
+                  name="service"
+                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Placeholder text"
+                />
+                <ErrorMessage
+                  name="service"
+                  component="div"
+                  className="text-red-500 mt-1 text-sm"
+                />
+              </div>
+
+              {/* Early Access */}
+              <div>
+                <label className="block text-gray-800 text-lg font-medium mb-2">
+                  Would you like early access when ZART launches?
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center space-x-2">
+                    <Field
+                      type="radio"
+                      name="earlyAccess"
+                      value="Yes, absolutely"
+                      className="h-4 w-4 text-blue-600"
+                    />
+                    <span className="text-gray-700">Yes, absolutely</span>
+                  </label>
+                  <label className="flex items-center space-x-2">
+                    <Field
+                      type="radio"
+                      name="earlyAccess"
+                      value="Maybe later"
+                      className="h-4 w-4 text-blue-600"
+                    />
+                    <span className="text-gray-700">Maybe later</span>
+                  </label>
+                  <label className="flex items-center space-x-2">
+                    <Field
+                      type="radio"
+                      name="earlyAccess"
+                      value="Not interested"
+                      className="h-4 w-4 text-blue-600"
+                    />
+                    <span className="text-gray-700">Not interested</span>
+                  </label>
+                </div>
+                <ErrorMessage
+                  name="earlyAccess"
+                  component="div"
+                  className="text-red-500 mt-1 text-sm"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                disabled={!(isValid && dirty) || isLoading}
+                className="w-full bg-gray-200 text-gray-500 py-3 rounded-lg font-medium transition-colors duration-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400"
+              >
+                {isLoading ? "Submitting..." : "Join the waitlist"}
+              </Button>
+            </Form>
+          );
+        }}
       </Formik>
     </div>
   );
 };
 
-export default PatronForm;
+export default ArtisanForm;

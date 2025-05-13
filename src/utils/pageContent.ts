@@ -3,8 +3,8 @@ import { ContentConfig } from "./type";
 export const PATRON_CONTENT: ContentConfig = {
   title: "Need an Artisan?\nWe know a guy",
   description:
-    "Request an artisan and get connected with one in your area that matches your exact need and budget.",
-  buttonText: "Request artisan",
+    "We’ll connect you with the right person, close to home, and within your budget - every time",
+  buttonText: "Join the waitlist",
   marqueeText:
     "100+ VETTED ARTISANS  QUALITY YOU CAN TRUST  WALLET FRIENDLY PRICES",
   formLink: "/form",
@@ -14,8 +14,8 @@ export const PATRON_CONTENT: ContentConfig = {
 export const ARTISAN_CONTENT: ContentConfig = {
   title: "Looking for customers?\nWe go run am",
   description:
-    "Register as an artisan and get matched to customers that need your service. Meet more people and make more money.",
-  buttonText: "Register",
+    "Sign up as an artisan and get matched with real people who need what you do best",
+  buttonText: "Join the waitlist",
   marqueeText: "INCREASE YOUR REVENUE  GROW YOUR CUSTOMER BASE",
   formLink: "/form",
   name: "artisan",
