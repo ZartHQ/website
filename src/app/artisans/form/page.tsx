@@ -27,7 +27,7 @@ const ArtisanFormPage = () => {
             Sign up as an artisan and get matched with real people who need what you do best.
           </p>
         </div>
-        <div className="w-full md:w-[600px] h-full md:min-h-[770px] bg-white shadow-2xl rounded-xl py-8 px-4 z-10">
+        <div className="w-full md:w-[600px] h-full md:min-h-[770px] bg-white shadow-2xl rounded-xl py-8 px-4 md:px-7 z-10">
           <ArtisanForm />
         </div>
       </div>

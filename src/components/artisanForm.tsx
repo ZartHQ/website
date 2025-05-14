@@ -40,6 +40,19 @@ const serviceTypes = [
   "Others"
 ];
 
+export type ContactMethod = "email" | "phone";
+
+export interface ServiceProviderForm {
+  name: string;
+  service: string;
+  contactMethods: ContactMethod[];
+  email?: string;
+  phoneNumber?: string;
+  localGovernment: string;
+  area: string;
+}
+
+
 // Validation schema
 const validationSchema = Yup.object().shape({
   fullName: Yup.string().required("Full name is required"),
@@ -66,6 +79,55 @@ const initialValues = {
 const ArtisanForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [areas, setAreas] = useState<string[]>([]);
+  
+
+  // const handleSubmit = async (
+  //   values: any,
+  //   {
+  //     setSubmitting,
+  //     resetForm
+  //   }: {
+  //     setSubmitting: (isSubmitting: boolean) => void;
+  //     resetForm: () => void;
+  //   }
+  // ) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const formData = {
+  //       fullName: values.fullName,
+  //       location: values.location,
+  //       email: values.email || "",
+  //       phone: values.phoneNumber || "",
+  //       artisanType: values.service,
+  //       otherArtisanType: values.otherService || "",
+  //       badExperienceDetails: values.badExperience || "",
+  //       earlyAccess: values.earlyAccess,
+  //       area: values.area
+  //     };
+  
+  //     const response = await fetch("https://formspree.io/f/xdkgpznl", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Accept: "application/json"
+  //       },
+  //       body: JSON.stringify(formData)
+  //     });
+  
+  //     if (!response.ok) throw new Error("Form submission failed");
+  
+  //     const result = await response.json();
+  //     console.log("Form submitted successfully:", result);
+  //     alert("Your details have been submitted successfully. We'll notify you when ZART launches!");
+  //     resetForm();
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //     alert("There was an error submitting your form. Please try again later.");
+  //   } finally {
+  //     setIsLoading(false);
+  //     setSubmitting(false);
+  //   }
+  // };
 
   const handleSubmit = async (
     values: any,
@@ -78,40 +140,30 @@ const ArtisanForm = () => {
     }
   ) => {
     setIsLoading(true);
+    // Post the form data to the API
     try {
-      const formData = {
-        fullName: values.fullName,
-        location: values.location,
-        email: values.email || "",
-        phone: values.phoneNumber || "",
-        artisanType: values.service,
-        otherArtisanType: values.otherService || "",
-        badExperienceDetails: values.badExperience || "",
-        earlyAccess: values.earlyAccess,
-        area: values.area
-      };
-  
-      const response = await fetch("https://formspree.io/f/xdkgpznl", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json"
+      const response = await request(
+        "POST",
+        `/forms/artisan`,
+        {
+          firstName: values.fullName.split(" ")[0],
+          lastName: values.fullName.split(" ")[1],
+          serviceLocalGov: values.location,
+          email: values.email,
+          phone: values.phoneNumber,
+          emailOrPhone: true,
+          serviceType: values.service,
+          serviceArea: values.area
         },
-        body: JSON.stringify(formData)
-      });
-  
-      if (!response.ok) throw new Error("Form submission failed");
-  
-      const result = await response.json();
-      console.log("Form submitted successfully:", result);
-      alert("Your details have been submitted successfully. We'll notify you when ZART launches!");
+        true,
+        true,
+        "Your details have been submitted successfully. We'll notify you when ZART launches!"
+      );
+      setIsLoading(false);
       resetForm();
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("There was an error submitting your form. Please try again later.");
-    } finally {
       setIsLoading(false);
-      setSubmitting(false);
+      console.error("Error submitting form:", error);
     }
   };
   
@@ -134,7 +186,7 @@ const ArtisanForm = () => {
           }, [values.location]);
 
           return (
-            <Form className="space-y-6 bg-white font-sans w-full max-w-lg p-6">
+            <Form className="space-y-6 bg-white font-sans w-full py-6 ">
               {/* Full Name */}
               <div>
                 <label className="block text-gray-800 text-lg font-medium mb-2">
@@ -144,7 +196,7 @@ const ArtisanForm = () => {
                   type="text"
                   name="fullName"
                   className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Placeholder text"
+                  placeholder="john doe"
                 />
                 <ErrorMessage
                   name="fullName"
@@ -163,10 +215,10 @@ const ArtisanForm = () => {
                     <Field
                       type="radio"
                       name="location"
-                      value="Lagos mainland"
+                      value="Lagos Mainland"
                       className="h-4 w-4 text-blue-600"
                     />
-                    <span className="text-gray-700">Lagos mainland</span>
+                    <span className="text-gray-700">Lagos Mainland</span>
                   </label>
                   <label className="flex items-center space-x-2">
                     <Field
@@ -220,7 +272,7 @@ const ArtisanForm = () => {
                   type="tel"
                   name="phoneNumber"
                   className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Placeholder text"
+                  placeholder="08012345678"
                 />
                 <ErrorMessage
                   name="phoneNumber"
@@ -238,7 +290,7 @@ const ArtisanForm = () => {
                   type="email"
                   name="email"
                   className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Placeholder text"
+                  placeholder="john.doe@example.com"
                 />
                 <ErrorMessage
                   name="email"
@@ -256,7 +308,7 @@ const ArtisanForm = () => {
                   type="text"
                   name="service"
                   className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Placeholder text"
+                  placeholder="Carpentry, Plumbing, etc."
                 />
                 <ErrorMessage
                   name="service"
@@ -310,7 +362,9 @@ const ArtisanForm = () => {
               <Button
                 type="submit"
                 disabled={!(isValid && dirty) || isLoading}
-                className="w-full bg-gray-200 text-gray-500 py-3 rounded-lg font-medium transition-colors duration-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400"
+                isLoading={isLoading}
+                loadingText="Submitting..."
+                className="w-full bg-[#FFC600]  py-3 rounded-lg font-medium transition-colors duration-200  disabled:bg-gray-100 disabled:text-gray-400"
               >
                 {isLoading ? "Submitting..." : "Join the waitlist"}
               </Button>

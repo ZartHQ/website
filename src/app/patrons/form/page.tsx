@@ -29,7 +29,7 @@ const PatronFormPage = () => {
             matches your exact need and budget.
           </p>
         </div>
-        <div className="w-full md:w-[600px] h-full md:min-h-[770px] bg-white shadow-2xl rounded-xl py-8 px-4 z-10">
+        <div className="w-full md:w-[600px] h-full md:min-h-[770px] bg-white shadow-2xl rounded-xl py-8 px-4 md:px-7 z-10">
           <PatronForm />
         </div>
       </div>
