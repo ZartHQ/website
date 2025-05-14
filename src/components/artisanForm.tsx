@@ -6,7 +6,7 @@ import request from "@/utils/api";
 
 // Areas data for the dropdown based on location selection
 const areasData = {
-  "Lagos mainland": [
+  "Lagos Mainland": [
     "Agege",
     "Ajeromi-Ifelodun",
     "Alimosho",
