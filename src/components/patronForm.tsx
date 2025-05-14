@@ -5,7 +5,7 @@ import { Button } from "./button";
 import request from "@/utils/api";
 
 const areasData = {
-  "Lagos mainland": [
+  "Lagos Mainland": [
     "Agege",
     "Ajeromi-Ifelodun",
     "Alimosho",
@@ -87,9 +87,49 @@ const PatronForm = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [areas, setAreas] = useState<string[]>([]);
 
-  const handleSubmit = (values: any) => {
-    console.log(values);
+  // const handleSubmit = (values: any) => {
+  //   console.log(values);
+  // };
+
+  const handleSubmit = async (
+    values: any,
+    {
+      setSubmitting,
+      resetForm
+    }: {
+      setSubmitting: (isSubmitting: boolean) => void;
+      resetForm: () => void;
+    }
+  ) => {
+    setIsLoading(true);
+    // Post the form data to the API
+    try {
+      const response = await request(
+        "POST",
+        `/forms/patron`,
+        {
+          firstName: values.fullName.split(" ")[0],
+          lastName: values.fullName.split(" ")[1],
+          location: values.location,
+          artisanTypes: values.artisanTypes,
+          otherArtisanType: values.otherArtisanType,
+          email: values.email,
+          phone: values.phoneNumber,
+          badExperience: values.badExperience,   
+          earlyAccessPreference: values.earlyAccess
+        },
+        true,
+        true,
+        "Your details have been submitted successfully. We'll notify you when ZART launches!"
+      );
+      setIsLoading(false);
+      resetForm();
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error submitting form:", error);
+    }
   };
+  
 
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
@@ -109,7 +149,7 @@ const PatronForm = () => {
         }, [values.location]);
   
           return (
-            <Form className="space-y-6 bg-white font-sans">
+            <Form className="space-y-6 bg-white font-sans w-full">
               {/* Full Name */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">Full name</label>
@@ -117,7 +157,7 @@ const PatronForm = () => {
                   type="text"
                   name="fullName"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Placeholder text"
+                  placeholder="john doe"
                 />
                 <ErrorMessage name="fullName" component="div" className="text-red-500 mt-1 text-sm" />
               </div>
@@ -126,7 +166,7 @@ const PatronForm = () => {
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">Location</label>
                 <div className="flex space-x-4">
-                {["Lagos mainland", "Lagos Island"].map((locationOption) => (
+                {["Lagos Mainland", "Lagos Island"].map((locationOption) => (
                   <label key={locationOption} className="inline-flex items-center">
                     <Field
                       type="radio"
@@ -175,7 +215,7 @@ const PatronForm = () => {
                   type="tel"
                   name="phoneNumber"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Placeholder text"
+                  placeholder="08012345678"
                 />
                 <ErrorMessage name="phoneNumber" component="div" className="text-red-500 mt-1 text-sm" />
               </div>
@@ -187,7 +227,7 @@ const PatronForm = () => {
                   type="email"
                   name="email"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Placeholder text"
+                  placeholder="john.doe@example.com"
                 />
                 <ErrorMessage name="email" component="div" className="text-red-500 mt-1 text-sm" />
               </div>
@@ -248,7 +288,7 @@ const PatronForm = () => {
                         value={access}
                         className="form-radio"
                       />
-                      <span className="ml-2">{access}</span>
+                      <span className="ml-1 text-base">{access}</span>
                     </label>
                   ))}
                 </div>
@@ -259,7 +299,7 @@ const PatronForm = () => {
               <Button
                 type="submit"
                 disabled={!(isValid && dirty) || isLoading}
-                className="w-full bg-gray-200 text-gray-800 py-3 px-6 rounded-lg font-medium transition-colors duration-200 cursor-pointer hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                className="w-full bg-[#FFC600] text-gray-800 py-3 px-6 rounded-lg font-medium transition-colors duration-200 cursor-pointer disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
               >
                 {isLoading ? "Submitting..." : "Join the waitlist"}
               </Button>
