@@ -30,17 +30,18 @@ const areasData = {
   ]
 };
 
-export type ArtisanType = 
-  | "Carpenter" 
-  | "Electrician" 
-  | "Plumber" 
-  | "Cleaner" 
+export type ArtisanType =
+  | "Carpenter"
+  | "Electrician"
+  | "Plumber"
+  | "Cleaner"
   | "Other";
 
 export type Location = "Lagos mainland" | "Lagos Island";
 
 export interface ArtisanRequestForm {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   location: string;
   phoneNumber: string;
   email: string;
@@ -59,7 +60,8 @@ const artisanTypes: ArtisanType[] = [
 ];
 
 const validationSchema = Yup.object().shape({
-  fullName: Yup.string().required("Full name is required"),
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
   location: Yup.string().required("Please select a location"),
   phoneNumber: Yup.string().required("Phone number is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -74,13 +76,14 @@ const validationSchema = Yup.object().shape({
 });
 
 const initialValues: ArtisanRequestForm = {
-  fullName: "",
+  firstName: "",
+  lastName: "",
   location: "",
   phoneNumber: "",
   email: "",
   artisanTypes: [],
   badExperience: "",
-  earlyAccess: "",
+  earlyAccess: ""
 };
 
 const PatronForm = () => {
@@ -108,14 +111,14 @@ const PatronForm = () => {
         "POST",
         `/forms/patron`,
         {
-          firstName: values.fullName.split(" ")[0],
-          lastName: values.fullName.split(" ")[1],
+          firstName: values.firstName,
+          lastName: values.lastName,
           location: values.location,
           artisanTypes: values.artisanTypes,
           otherArtisanType: values.otherArtisanType,
           email: values.email,
           phone: values.phoneNumber,
-          badExperience: values.badExperience,   
+          badExperience: values.badExperience,
           earlyAccessPreference: values.earlyAccess
         },
         true,
@@ -129,59 +132,91 @@ const PatronForm = () => {
       console.error("Error submitting form:", error);
     }
   };
-  
 
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
+        onSubmit={handleSubmit}>
         {({ values, errors, touched, isValid, dirty, setFieldValue }) => {
           // Update areas when location changes
           useEffect(() => {
-          if (values.location) {
-            setAreas(areasData[values.location as keyof typeof areasData] || []);
-          } else {
-            setAreas([]);
-          }
-        }, [values.location]);
-  
+            if (values.location) {
+              setAreas(
+                areasData[values.location as keyof typeof areasData] || []
+              );
+            } else {
+              setAreas([]);
+            }
+          }, [values.location]);
+
           return (
             <Form className="space-y-6 bg-white font-sans w-full">
               {/* Full Name */}
-              <div>
-                <label className="block text-gray-800 font-semibold mb-2">Full name</label>
-                <Field
-                  type="text"
-                  name="fullName"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="john doe"
-                />
-                <ErrorMessage name="fullName" component="div" className="text-red-500 mt-1 text-sm" />
+              <div className="flex flex-col  md:flex-row items-center justify-between gap-6">
+                <div className="w-full">
+                  <label className="block text-[#0C1E22] font-bold mb-2">
+                    First name <span className="text-[#B42318]">*</span>
+                  </label>
+                  <Field
+                    type="text"
+                    name="firstName"
+                    className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="First name"
+                  />
+                  <ErrorMessage
+                    name="firstName"
+                    component="div"
+                    className="text-[#B42318] mt-1 text-sm"
+                  />
+                </div>
+                <div className="w-full">
+                  <label className="block text-[#0C1E22] font-bold mb-2">
+                    Last name <span className="text-[#B42318]">*</span>
+                  </label>
+                  <Field
+                    type="text"
+                    name="lastName"
+                    className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="doe"
+                  />
+                  <ErrorMessage
+                    name="lastName"
+                    component="div"
+                    className="text-[#B42318] mt-1 text-sm"
+                  />
+                </div>
               </div>
-  
+
               {/* Location */}
               <div>
-                <label className="block text-gray-800 font-semibold mb-2">Location</label>
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  Location
+                </label>
                 <div className="flex space-x-4">
-                {["Lagos Mainland", "Lagos Island"].map((locationOption) => (
-                  <label key={locationOption} className="inline-flex items-center">
-                    <Field
-                      type="radio"
-                      name="location"
-                      value={locationOption}
-                      checked={values.location === locationOption}
-                      className="form-radio"
-                    />
-                    <span className="ml-2">{locationOption}</span>
-                  </label>
-                ))}
+                  {["Lagos Mainland", "Lagos Island"].map((locationOption) => (
+                    <label
+                      key={locationOption}
+                      className="inline-flex items-center">
+                      <Field
+                        type="radio"
+                        name="location"
+                        value={locationOption}
+                        checked={values.location === locationOption}
+                        className="form-radio"
+                      />
+                      <span className="ml-2 text-[#515152] text-base">{locationOption}</span>
+                    </label>
+                  ))}
                 </div>
-                <ErrorMessage name="location" component="div" className="text-red-500 mt-1 text-sm" />
+                <ErrorMessage
+                  name="location"
+                  component="div"
+                  className="text-[#B42318] mt-1 text-sm"
+                />
               </div>
-  
+
               {/* Area Dropdown - Only shows when location is selected */}
               {values.location && (
                 <div>
@@ -191,8 +226,7 @@ const PatronForm = () => {
                   <Field
                     as="select"
                     name="area"
-                    className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
+                    className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Select an area</option>
                     {areas.map((area) => (
                       <option key={area} value={area}>
@@ -203,38 +237,52 @@ const PatronForm = () => {
                   <ErrorMessage
                     name="area"
                     component="div"
-                    className="text-red-500 mt-1 text-sm"
+                    className="text-[#B42318] mt-1 text-sm"
                   />
                 </div>
               )}
-  
+
               {/* Phone Number */}
               <div>
-                <label className="block text-gray-800 font-semibold mb-2">Phone number (WhatsApp preferred)</label>
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  Phone number (WhatsApp preferred) <span className="text-[#B42318]">*</span>
+                </label>
                 <Field
                   type="tel"
                   name="phoneNumber"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="08012345678"
+                  className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Phone number"
                 />
-                <ErrorMessage name="phoneNumber" component="div" className="text-red-500 mt-1 text-sm" />
+                <ErrorMessage
+                  name="phoneNumber"
+                  component="div"
+                  className="text-[#B42318] mt-1 text-sm"
+                />
               </div>
-  
+
               {/* Email */}
               <div>
-                <label className="block text-gray-800 font-semibold mb-2">Email address</label>
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  Email address <span className="text-[#B42318]">*</span>
+                </label>
                 <Field
                   type="email"
                   name="email"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="john.doe@example.com"
+                  className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Email address"
                 />
-                <ErrorMessage name="email" component="div" className="text-red-500 mt-1 text-sm" />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-[#B42318] mt-1 text-sm"
+                />
               </div>
-  
+
               {/* Artisan Types */}
               <div>
-                <label className="block text-gray-800 font-semibold mb-2">What kind of artisan do you usually need help with?</label>
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  What kind of artisan do you usually need help with?
+                </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {artisanTypes.map((type) => (
                     <label key={type} className="inline-flex items-center">
@@ -244,30 +292,42 @@ const PatronForm = () => {
                         value={type}
                         className="form-checkbox"
                       />
-                      <span className="ml-2">{type}</span>
+                      <span className="ml-2 text-[#515152] text-base">{type}</span>
                     </label>
                   ))}
                 </div>
-                <ErrorMessage name="artisanTypes" component="div" className="text-red-500 mt-1 text-sm" />
+                <ErrorMessage
+                  name="artisanTypes"
+                  component="div"
+                  className="text-[#B42318] mt-1 text-sm"
+                />
               </div>
-  
+
               {/* Other Artisan Type */}
               {values.artisanTypes?.includes("Other") && (
                 <div>
-                  <label className="block text-gray-800 font-semibold mb-2">Others (specify)</label>
+                  <label className="block text-[#0C1E22] font-bold mb-2">
+                    Others (specify)
+                  </label>
                   <Field
                     type="text"
                     name="otherArtisanType"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Specify artisan type"
                   />
-                  <ErrorMessage name="otherArtisanType" component="div" className="text-red-500 mt-1 text-sm" />
+                  <ErrorMessage
+                    name="otherArtisanType"
+                    component="div"
+                    className="text-[#B42318] mt-1 text-sm"
+                  />
                 </div>
               )}
-  
+
               {/* Bad Experience */}
               <div>
-                <label className="block text-gray-800 font-semibold mb-2">Have you ever had a bad experience with an artisan?</label>
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  Have you ever had a bad experience with an artisan?
+                </label>
                 <Field
                   as="textarea"
                   name="badExperience"
@@ -275,32 +335,39 @@ const PatronForm = () => {
                   placeholder="Feel free to share — we're solving this!"
                 />
               </div>
-  
+
               {/* Early Access */}
               <div>
-                <label className="block text-gray-800 font-semibold mb-2">Would you like early access when ZART launches?</label>
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  Would you like early access when ZART launches? <span className="text-[#B42318]">*</span>
+                </label>
                 <div className="flex space-x-4">
-                  {["Yes, absolutely", "Maybe later", "Not interested"].map((access) => (
-                    <label key={access} className="inline-flex items-center">
-                      <Field
-                        type="radio"
-                        name="earlyAccess"
-                        value={access}
-                        className="form-radio"
-                      />
-                      <span className="ml-1 text-base">{access}</span>
-                    </label>
-                  ))}
+                  {["Yes, absolutely", "Maybe later", "Not interested"].map(
+                    (access) => (
+                      <label key={access} className="inline-flex items-center">
+                        <Field
+                          type="radio"
+                          name="earlyAccess"
+                          value={access}
+                          className="form-radio"
+                        />
+                        <span className="ml-1 text-[#515152] text-base">{access}</span>
+                      </label>
+                    )
+                  )}
                 </div>
-                <ErrorMessage name="earlyAccess" component="div" className="text-red-500 mt-1 text-sm" />
+                <ErrorMessage
+                  name="earlyAccess"
+                  component="div"
+                  className="text-[#B42318] mt-1 text-sm"
+                />
               </div>
-  
+
               {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={!(isValid && dirty) || isLoading}
-                className="w-full bg-[#FFC600] text-gray-800 py-3 px-6 rounded-lg font-medium transition-colors duration-200 cursor-pointer disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
-              >
+                className="w-full bg-[#FFC600] text-gray-800 py-3 px-6 rounded-lg font-semibold transition-colors duration-200 cursor-pointer disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
                 {isLoading ? "Submitting..." : "Join the waitlist"}
               </Button>
             </Form>
@@ -309,6 +376,6 @@ const PatronForm = () => {
       </Formik>
     </div>
   );
-}  
+};
 
 export default PatronForm;

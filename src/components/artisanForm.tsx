@@ -52,7 +52,6 @@ export interface ServiceProviderForm {
   area: string;
 }
 
-
 // Validation schema
 const validationSchema = Yup.object().shape({
   fullName: Yup.string().required("Full name is required"),
@@ -79,7 +78,6 @@ const initialValues = {
 const ArtisanForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [areas, setAreas] = useState<string[]>([]);
-  
 
   // const handleSubmit = async (
   //   values: any,
@@ -104,7 +102,7 @@ const ArtisanForm = () => {
   //       earlyAccess: values.earlyAccess,
   //       area: values.area
   //     };
-  
+
   //     const response = await fetch("https://formspree.io/f/xdkgpznl", {
   //       method: "POST",
   //       headers: {
@@ -113,9 +111,9 @@ const ArtisanForm = () => {
   //       },
   //       body: JSON.stringify(formData)
   //     });
-  
+
   //     if (!response.ok) throw new Error("Form submission failed");
-  
+
   //     const result = await response.json();
   //     console.log("Form submitted successfully:", result);
   //     alert("Your details have been submitted successfully. We'll notify you when ZART launches!");
@@ -166,20 +164,20 @@ const ArtisanForm = () => {
       console.error("Error submitting form:", error);
     }
   };
-  
 
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
+        onSubmit={handleSubmit}>
         {({ values, errors, touched, isValid, dirty, setFieldValue }) => {
           // Update areas when location changes
           useEffect(() => {
             if (values.location) {
-              setAreas(areasData[values.location as keyof typeof areasData] || []);
+              setAreas(
+                areasData[values.location as keyof typeof areasData] || []
+              );
             } else {
               setAreas([]);
             }
@@ -188,27 +186,45 @@ const ArtisanForm = () => {
           return (
             <Form className="space-y-6 bg-white font-sans w-full py-6 ">
               {/* Full Name */}
-              <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
-                  Full name
-                </label>
-                <Field
-                  type="text"
-                  name="fullName"
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="john doe"
-                />
-                <ErrorMessage
-                  name="fullName"
-                  component="div"
-                  className="text-red-500 mt-1 text-sm"
-                />
+              <div className="flex flex-col  md:flex-row items-center justify-between gap-6">
+                <div className="w-full">
+                  <label className="block text-[#0C1E22] font-bold mb-2">
+                    First name <span className="text-[#B42318]">*</span>
+                  </label>
+                  <Field
+                    type="text"
+                    name="firstName"
+                    className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="First name"
+                  />
+                  <ErrorMessage
+                    name="firstName"
+                    component="div"
+                    className="text-[#B42318] mt-1 text-sm"
+                  />
+                </div>
+                <div className="w-full">
+                  <label className="block text-[#0C1E22] font-bold mb-2">
+                    Last name <span className="text-[#B42318]">*</span>
+                  </label>
+                  <Field
+                    type="text"
+                    name="lastName"
+                    className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="doe"
+                  />
+                  <ErrorMessage
+                    name="lastName"
+                    component="div"
+                    className="text-[#B42318] mt-1 text-sm"
+                  />
+                </div>
               </div>
 
               {/* Location */}
               <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
-                  Location
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  Location <span className="text-[#B42318]">*</span>
                 </label>
                 <div className="flex gap-4">
                   <label className="flex items-center space-x-2">
@@ -218,7 +234,7 @@ const ArtisanForm = () => {
                       value="Lagos Mainland"
                       className="h-4 w-4 text-blue-600"
                     />
-                    <span className="text-gray-700">Lagos Mainland</span>
+                    <span className="text-[#515152] text-base">Lagos Mainland</span>
                   </label>
                   <label className="flex items-center space-x-2">
                     <Field
@@ -227,27 +243,26 @@ const ArtisanForm = () => {
                       value="Lagos Island"
                       className="h-4 w-4 text-blue-600"
                     />
-                    <span className="text-gray-700">Lagos Island</span>
+                    <span className="text-[#515152] text-base">Lagos Island</span>
                   </label>
                 </div>
                 <ErrorMessage
                   name="location"
                   component="div"
-                  className="text-red-500 mt-1 text-sm"
+                  className="text-[#B42318] mt-1 text-sm"
                 />
               </div>
 
               {/* Area Dropdown - Only shows when location is selected */}
               {values.location && (
                 <div>
-                  <label className="block text-gray-800 text-lg font-medium mb-2">
-                    Area
+                  <label className="block text-[#0C1E22] font-bold mb-2">
+                    Area <span className="text-[#B42318]">*</span>
                   </label>
                   <Field
                     as="select"
                     name="area"
-                    className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
+                    className="w-full h-12 px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Select an area</option>
                     {areas.map((area) => (
                       <option key={area} value={area}>
@@ -258,69 +273,69 @@ const ArtisanForm = () => {
                   <ErrorMessage
                     name="area"
                     component="div"
-                    className="text-red-500 mt-1 text-sm"
+                    className="text-[#B42318] mt-1 text-sm"
                   />
                 </div>
               )}
 
               {/* Phone Number */}
               <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
-                  Phone number (WhatsApp preferred)
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  Phone number (WhatsApp preferred)<span className="text-[#B42318]">*</span>
                 </label>
                 <Field
                   type="tel"
                   name="phoneNumber"
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full h-12 px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="08012345678"
                 />
                 <ErrorMessage
                   name="phoneNumber"
                   component="div"
-                  className="text-red-500 mt-1 text-sm"
+                  className="text-[#B42318] mt-1 text-sm"
                 />
               </div>
 
               {/* Email Address */}
               <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
-                  Email address
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  Email address <span className="text-[#B42318]">*</span>
                 </label>
                 <Field
                   type="email"
                   name="email"
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="john.doe@example.com"
+                  className="w-full h-12 px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Email address"
                 />
                 <ErrorMessage
                   name="email"
                   component="div"
-                  className="text-red-500 mt-1 text-sm"
+                  className="text-[#B42318] mt-1 text-sm"
                 />
               </div>
 
               {/* What service do you offer? */}
               <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
-                  What service do you offer?
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  What service do you offer? <span className="text-[#B42318]">*</span>
                 </label>
                 <Field
                   type="text"
                   name="service"
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full h-12 px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Carpentry, Plumbing, etc."
                 />
                 <ErrorMessage
                   name="service"
                   component="div"
-                  className="text-red-500 mt-1 text-sm"
+                  className="text-[#B42318] mt-1 text-sm"
                 />
               </div>
 
               {/* Early Access */}
               <div>
-                <label className="block text-gray-800 text-lg font-medium mb-2">
-                  Would you like early access when ZART launches?
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  Would you like early access when ZART launches?<span className="text-[#B42318]">*</span>
                 </label>
                 <div className="flex gap-4">
                   <label className="flex items-center space-x-2">
@@ -330,7 +345,7 @@ const ArtisanForm = () => {
                       value="Yes, absolutely"
                       className="h-4 w-4 text-blue-600"
                     />
-                    <span className="text-gray-700">Yes, absolutely</span>
+                    <span className="text-[#515152]">Yes, absolutely</span>
                   </label>
                   <label className="flex items-center space-x-2">
                     <Field
@@ -339,7 +354,7 @@ const ArtisanForm = () => {
                       value="Maybe later"
                       className="h-4 w-4 text-blue-600"
                     />
-                    <span className="text-gray-700">Maybe later</span>
+                    <span className="text-[#515152]">Maybe later</span>
                   </label>
                   <label className="flex items-center space-x-2">
                     <Field
@@ -348,13 +363,13 @@ const ArtisanForm = () => {
                       value="Not interested"
                       className="h-4 w-4 text-blue-600"
                     />
-                    <span className="text-gray-700">Not interested</span>
+                    <span className="text-[#515152]">Not interested</span>
                   </label>
                 </div>
                 <ErrorMessage
                   name="earlyAccess"
                   component="div"
-                  className="text-red-500 mt-1 text-sm"
+                  className="text-[#B42318] mt-1 text-sm"
                 />
               </div>
 
@@ -364,8 +379,7 @@ const ArtisanForm = () => {
                 disabled={!(isValid && dirty) || isLoading}
                 isLoading={isLoading}
                 loadingText="Submitting..."
-                className="w-full bg-[#FFC600]  py-3 rounded-lg font-medium transition-colors duration-200  disabled:bg-gray-100 disabled:text-gray-400"
-              >
+                className="w-full bg-[#FFC600]  py-3 rounded-lg font-medium transition-colors duration-200  disabled:bg-gray-100 disabled:text-gray-400">
                 {isLoading ? "Submitting..." : "Join the waitlist"}
               </Button>
             </Form>
