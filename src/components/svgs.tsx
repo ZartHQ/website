@@ -7350,8 +7350,8 @@ export const ArtisanSVG = () => {
 export const MobileArtisanSVG = () => {
   return (
     <svg
-      width="430"
-      height="100%"
+      width="100%"
+      height="392"
       viewBox="0 0 430 392"
       fill="none"
       xmlns="http://www.w3.org/2000/svg">
