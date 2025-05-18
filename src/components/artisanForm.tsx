@@ -54,7 +54,8 @@ export interface ServiceProviderForm {
 
 // Validation schema
 const validationSchema = Yup.object().shape({
-  fullName: Yup.string().required("Full name is required"),
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
   location: Yup.string().required("Location is required"),
   phoneNumber: Yup.string().nullable(),
   email: Yup.string().email("Invalid email format").nullable(),
@@ -144,8 +145,8 @@ const ArtisanForm = () => {
         "POST",
         `/forms/artisan`,
         {
-          firstName: values.fullName.split(" ")[0],
-          lastName: values.fullName.split(" ")[1],
+          firstName: values.firstName,
+          lastName: values.lastName,
           serviceLocalGov: values.location,
           email: values.email,
           phone: values.phoneNumber,
