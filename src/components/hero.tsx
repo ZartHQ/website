@@ -13,7 +13,7 @@ const HeroContent = ({ content }: HeroProps) => {
   const router = useRouter();
   return (
     <div className="text-center mb-8">
-      <h1 className="text-[#115746] text-4xl md:text-7xl font-extrabold whitespace-pre-line mb-4">
+      <h1 className="text-[#0C1E22] text-4xl md:text-7xl font-extrabold whitespace-pre-line mb-4">
         {content.title}
       </h1>
       <p className="text-[#323233] text-lg md:text-xl mb-8 max-w-2xl mx-auto">
@@ -27,7 +27,7 @@ const HeroContent = ({ content }: HeroProps) => {
             }`
           )
         }
-        className="text-white"
+        className="text-[#F8F8F8] bg-[#0C1E22] font-semibold"
       >
         {content.buttonText}
       </Button>

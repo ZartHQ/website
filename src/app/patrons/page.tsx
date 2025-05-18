@@ -7,7 +7,7 @@ import React from "react";
 
 const PatronPage = () => {
   return (
-    <div className="h-screen">
+    <div className="h-[80vh]">
       <div className="max-w-4xl mx-auto px-4 pt-1 md:pt-8 relative z-10">
         <div className="flex justify-center mt-3 md:mt-14 mb-12">
           <PageToggle currentPage="patron" />
