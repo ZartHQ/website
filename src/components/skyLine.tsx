@@ -28,7 +28,7 @@ const SkyLine = ({
   }, []);
 
   return (
-    <div className="absolute bottom-10 md:bottom-0 left-0 right-0 bg-transparent w-full max-h-[55vh]">
+    <div className="bg-transparent w-full">
       {selectedForm === "patron" 
         ? (isMobile ? <MobilePatronSVG /> : <PatronSVG />)
         : (isMobile ? <MobileArtisanSVG/> :<ArtisanSVG />)
