@@ -6,7 +6,7 @@ interface LayoutProps {
 
 const ArtisanLayout = ({ children }: LayoutProps) => {
     return (
-      <div className="min-h-screen bg-white relative overflow-hidden">
+      <div className="min-h-dvh bg-white relative overflow-hidden">
         {children}
       </div>
     );

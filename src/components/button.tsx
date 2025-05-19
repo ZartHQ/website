@@ -21,7 +21,7 @@ export const Button = ({
   return (
     <button
       onClick={onClick}
-      className={`bg-[#115746] px-8 py-3 rounded-lg text-xl font-medium hover:bg-opacity-90 transition-colors ${
+      className={`px-8 py-3 rounded-lg text-xl font-medium hover:bg-opacity-90 transition-colors ${
         isLoading ? "cursor-not-allowed opacity-80" : ""
       } ${className}`}
       disabled={isLoading || disabled} // Disable the button while loading

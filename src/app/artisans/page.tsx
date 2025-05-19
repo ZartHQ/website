@@ -21,7 +21,7 @@ const ArtisanPage = () => {
       <div className="absolute bottom-0 left-0 right-0 bg-transparent">
         <MarqueeText
           text={ARTISAN_CONTENT.marqueeText}
-          className="font-bold py-4"
+          className="font-bold py-2 h-[48px]"
         />
       </div>
     </div>
