@@ -22,6 +22,7 @@ export const MarqueeText = ({ text, className = "" }: MarqueeTextProps) => {
           alt="logo"
           width={70}
           height={70}
+          className="w-[60px] h-[30px]"
         />
         <span
           className="inline-block w-[12px] h-[12px] bg-[#D4D4D6] rounded-full mx-3"
