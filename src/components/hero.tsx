@@ -20,7 +20,7 @@ const HeroContent = ({ content }: HeroProps) => {
         {content.description}
       </p>
 
-      <div className="mt-12">
+      <div className="mt-9">
         <Button
           onClick={() =>
             router.push(
