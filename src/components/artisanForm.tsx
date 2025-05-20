@@ -3,6 +3,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "./button";
 import request from "@/utils/api";
+import PhoneInput from "react-phone-number-input";
+import { isPossiblePhoneNumber, isValidPhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import flags from "react-phone-number-input/flags";
 
 // Areas data for the dropdown based on location selection
 const areasData = {
@@ -57,7 +61,12 @@ const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
   location: Yup.string().required("Location is required"),
-  phoneNumber: Yup.string().nullable(),
+  phoneNumber: Yup.string()
+    .required("Phone number is required")
+    .test("is-valid-phone", "Please enter a valid Nigerian phone number", function(value) {
+      if (!value) return false;
+      return isPossiblePhoneNumber(value) && isValidPhoneNumber(value);
+    }),
   email: Yup.string().email("Invalid email format").nullable(),
   service: Yup.string().required("Please specify the service you offer"),
   earlyAccess: Yup.string().required("Please select an option")
@@ -65,7 +74,8 @@ const validationSchema = Yup.object().shape({
 
 // Initial form values
 const initialValues = {
-  fullName: "",
+  firstName: "",
+  lastName: "",
   location: "",
   phoneNumber: "",
   email: "",
@@ -76,57 +86,34 @@ const initialValues = {
   area: ""
 };
 
+// Custom CSS to override and match existing styles
+const phoneInputStyles = `
+  .PhoneInput {
+    width: 100%;
+  }
+  .PhoneInputInput {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    // border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s;
+    font-size: 16px;
+  }
+  .PhoneInputInput:focus {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+  .PhoneInputCountry {
+    margin-right: 8px;
+    margin-left: 10px;
+  }
+`;
+
 const ArtisanForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [areas, setAreas] = useState<string[]>([]);
-
-  // const handleSubmit = async (
-  //   values: any,
-  //   {
-  //     setSubmitting,
-  //     resetForm
-  //   }: {
-  //     setSubmitting: (isSubmitting: boolean) => void;
-  //     resetForm: () => void;
-  //   }
-  // ) => {
-  //   setIsLoading(true);
-  //   try {
-  //     const formData = {
-  //       fullName: values.fullName,
-  //       location: values.location,
-  //       email: values.email || "",
-  //       phone: values.phoneNumber || "",
-  //       artisanType: values.service,
-  //       otherArtisanType: values.otherService || "",
-  //       badExperienceDetails: values.badExperience || "",
-  //       earlyAccess: values.earlyAccess,
-  //       area: values.area
-  //     };
-
-  //     const response = await fetch("https://formspree.io/f/xdkgpznl", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Accept: "application/json"
-  //       },
-  //       body: JSON.stringify(formData)
-  //     });
-
-  //     if (!response.ok) throw new Error("Form submission failed");
-
-  //     const result = await response.json();
-  //     console.log("Form submitted successfully:", result);
-  //     alert("Your details have been submitted successfully. We'll notify you when ZART launches!");
-  //     resetForm();
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //     alert("There was an error submitting your form. Please try again later.");
-  //   } finally {
-  //     setIsLoading(false);
-  //     setSubmitting(false);
-  //   }
-  // };
 
   const handleSubmit = async (
     values: any,
@@ -168,6 +155,7 @@ const ArtisanForm = () => {
 
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
+      <style>{phoneInputStyles}</style>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -212,7 +200,7 @@ const ArtisanForm = () => {
                     type="text"
                     name="lastName"
                     className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="doe"
+                    placeholder="Last name"
                   />
                   <ErrorMessage
                     name="lastName"
@@ -263,7 +251,7 @@ const ArtisanForm = () => {
                   <Field
                     as="select"
                     name="area"
-                    className="w-full h-12 px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Select an area</option>
                     {areas.map((area) => (
                       <option key={area} value={area}>
@@ -279,17 +267,23 @@ const ArtisanForm = () => {
                 </div>
               )}
 
-              {/* Phone Number */}
+              {/* Phone Number - Updated with React Phone Number Input */}
               <div>
                 <label className="block text-[#0C1E22] font-bold mb-2">
                   Phone number (WhatsApp preferred)<span className="text-[#B42318]">*</span>
                 </label>
-                <Field
-                  type="tel"
-                  name="phoneNumber"
-                  className="w-full h-12 px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="08012345678"
-                />
+                <div className="phone-input-container">
+                  <PhoneInput
+                    international={false}
+                    defaultCountry="NG"
+                    countries={["NG"]} // Only allow Nigerian numbers
+                    flags={flags}
+                    value={values.phoneNumber}
+                    onChange={(value) => setFieldValue("phoneNumber", value || "")}
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter phone number"
+                  />
+                </div>
                 <ErrorMessage
                   name="phoneNumber"
                   component="div"
