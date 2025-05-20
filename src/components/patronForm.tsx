@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "./button";
 import request from "@/utils/api";
+import { showToast } from "@/utils/toast";
 
 const areasData = {
   "Lagos Mainland": [
@@ -94,6 +95,45 @@ const PatronForm = () => {
   //   console.log(values);
   // };
 
+  // const handleSubmit = async (
+  //   values: any,
+  //   {
+  //     setSubmitting,
+  //     resetForm
+  //   }: {
+  //     setSubmitting: (isSubmitting: boolean) => void;
+  //     resetForm: () => void;
+  //   }
+  // ) => {
+  //   setIsLoading(true);
+  //   // Post the form data to the API
+  //   try {
+  //     const response = await request(
+  //       "POST",
+  //       `/forms/patron`,
+  //       {
+  //         firstName: values.firstName,
+  //         lastName: values.lastName,
+  //         location: values.location,
+  //         artisanTypes: values.artisanTypes,
+  //         otherArtisanType: values.otherArtisanType,
+  //         email: values.email,
+  //         phone: values.phoneNumber,
+  //         badExperience: values.badExperience,
+  //         earlyAccessPreference: values.earlyAccess
+  //       },
+  //       true,
+  //       true,
+  //       "Your details have been submitted successfully. We'll notify you when ZART launches!"
+  //     );
+  //     setIsLoading(false);
+  //     resetForm();
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     console.error("Error submitting form:", error);
+  //   }
+  // };
+
   const handleSubmit = async (
     values: any,
     {
@@ -105,31 +145,40 @@ const PatronForm = () => {
     }
   ) => {
     setIsLoading(true);
-    // Post the form data to the API
     try {
-      const response = await request(
-        "POST",
-        `/forms/patron`,
-        {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          location: values.location,
-          artisanTypes: values.artisanTypes,
-          otherArtisanType: values.otherArtisanType,
-          email: values.email,
-          phone: values.phoneNumber,
-          badExperience: values.badExperience,
-          earlyAccessPreference: values.earlyAccess
+      const formData = {
+        fullName: values.fullName,
+        location: values.location,
+        email: values.email || "",
+        phone: values.phoneNumber || "",
+        artisanType: values.service,
+        otherArtisanType: values.otherService || "",
+        badExperienceDetails: values.badExperience || "",
+        earlyAccess: values.earlyAccess,
+        area: values.area
+      };
+  
+      const response = await fetch("https://formspree.io/f/xyzwbjyb", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
         },
-        true,
-        true,
-        "Your details have been submitted successfully. We'll notify you when ZART launches!"
-      );
-      setIsLoading(false);
+        body: JSON.stringify(formData)
+      });
+  
+      if (!response.ok) throw new Error("Form submission failed");
+  
+      const result = await response.json();
+      console.log("Form submitted successfully:", result);
+      showToast("Your details have been submitted successfully. We'll notify you when ZART launches!");
       resetForm();
     } catch (error) {
-      setIsLoading(false);
       console.error("Error submitting form:", error);
+      showToast("There was an error submitting your form. Please try again later.");
+    } finally {
+      setIsLoading(false);
+      setSubmitting(false);
     }
   };
 
