@@ -3,6 +3,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "./button";
 import request from "@/utils/api";
+import PhoneInput from "react-phone-number-input";
+import { isPossiblePhoneNumber, isValidPhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import flags from "react-phone-number-input/flags";
 
 const areasData = {
   "Lagos Mainland": [
@@ -63,7 +67,12 @@ const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
   location: Yup.string().required("Please select a location"),
-  phoneNumber: Yup.string().required("Phone number is required"),
+  phoneNumber: Yup.string()
+      .required("Phone number is required")
+      .test("is-valid-phone", "Please enter a valid Nigerian phone number", function(value) {
+        if (!value) return false;
+        return isPossiblePhoneNumber(value) && isValidPhoneNumber(value);
+      }),
   email: Yup.string().email("Invalid email").required("Email is required"),
   artisanTypes: Yup.array()
     .min(1, "Please select at least one artisan type")
@@ -86,6 +95,29 @@ const initialValues: ArtisanRequestForm = {
   earlyAccess: ""
 };
 
+const phoneInputStyles = `
+  .PhoneInput {
+    width: 100%;
+  }
+  .PhoneInputInput {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    // border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s;
+    font-size: 16px;
+  }
+  .PhoneInputInput:focus {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+  .PhoneInputCountry {
+    margin-right: 8px;
+    margin-left: 10px;
+  }
+`;
 const PatronForm = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [areas, setAreas] = useState<string[]>([]);
@@ -135,6 +167,7 @@ const PatronForm = () => {
 
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
+       <style>{phoneInputStyles}</style>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -245,14 +278,20 @@ const PatronForm = () => {
               {/* Phone Number */}
               <div>
                 <label className="block text-[#0C1E22] font-bold mb-2">
-                  Phone number (WhatsApp preferred) <span className="text-[#B42318]">*</span>
+                  Phone number (WhatsApp preferred)<span className="text-[#B42318]">*</span>
                 </label>
-                <Field
-                  type="tel"
-                  name="phoneNumber"
-                  className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Phone number"
-                />
+                <div className="phone-input-container">
+                  <PhoneInput
+                    international={false}
+                    defaultCountry="NG"
+                    countries={["NG"]} // Only allow Nigerian numbers
+                    flags={flags}
+                    value={values.phoneNumber}
+                    onChange={(value) => setFieldValue("phoneNumber", value || "")}
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter phone number"
+                  />
+                </div>
                 <ErrorMessage
                   name="phoneNumber"
                   component="div"
