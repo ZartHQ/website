@@ -8545,8 +8545,8 @@ export const MobileArtisanSVG = () => {
   return (
     <svg
       width="100%"
-      height="300"
-      viewBox="0 0 430 392"
+      height="235"
+      viewBox="100 0 210 392"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
