@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "./button";
 import request from "@/utils/api";
+import { showToast } from "@/utils/toast";
 
 // Areas data for the dropdown based on location selection
 const areasData = {
@@ -80,54 +81,6 @@ const ArtisanForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [areas, setAreas] = useState<string[]>([]);
 
-  // const handleSubmit = async (
-  //   values: any,
-  //   {
-  //     setSubmitting,
-  //     resetForm
-  //   }: {
-  //     setSubmitting: (isSubmitting: boolean) => void;
-  //     resetForm: () => void;
-  //   }
-  // ) => {
-  //   setIsLoading(true);
-  //   try {
-  //     const formData = {
-  //       fullName: values.fullName,
-  //       location: values.location,
-  //       email: values.email || "",
-  //       phone: values.phoneNumber || "",
-  //       artisanType: values.service,
-  //       otherArtisanType: values.otherService || "",
-  //       badExperienceDetails: values.badExperience || "",
-  //       earlyAccess: values.earlyAccess,
-  //       area: values.area
-  //     };
-
-  //     const response = await fetch("https://formspree.io/f/xdkgpznl", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Accept: "application/json"
-  //       },
-  //       body: JSON.stringify(formData)
-  //     });
-
-  //     if (!response.ok) throw new Error("Form submission failed");
-
-  //     const result = await response.json();
-  //     console.log("Form submitted successfully:", result);
-  //     alert("Your details have been submitted successfully. We'll notify you when ZART launches!");
-  //     resetForm();
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //     alert("There was an error submitting your form. Please try again later.");
-  //   } finally {
-  //     setIsLoading(false);
-  //     setSubmitting(false);
-  //   }
-  // };
-
   const handleSubmit = async (
     values: any,
     {
@@ -139,32 +92,80 @@ const ArtisanForm = () => {
     }
   ) => {
     setIsLoading(true);
-    // Post the form data to the API
     try {
-      const response = await request(
-        "POST",
-        `/forms/artisan`,
-        {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          serviceLocalGov: values.location,
-          email: values.email,
-          phone: values.phoneNumber,
-          emailOrPhone: true,
-          serviceType: values.service,
-          serviceArea: values.area
+      const formData = {
+        fullName: values.fullName,
+        location: values.location,
+        email: values.email || "",
+        phone: values.phoneNumber || "",
+        artisanType: values.service,
+        otherArtisanType: values.otherService || "",
+        badExperienceDetails: values.badExperience || "",
+        earlyAccess: values.earlyAccess,
+        area: values.area
+      };
+
+      const response = await fetch("https://formspree.io/f/xdkgpznl", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
         },
-        true,
-        true,
-        "Your details have been submitted successfully. We'll notify you when ZART launches!"
-      );
-      setIsLoading(false);
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) throw new Error("Form submission failed");
+
+      const result = await response.json();
+      console.log("Form submitted successfully:", result);
+      showToast("Your details have been submitted successfully. We'll notify you when ZART launches!");
       resetForm();
     } catch (error) {
-      setIsLoading(false);
       console.error("Error submitting form:", error);
+      showToast("There was an error submitting your form. Please try again later.");
+    } finally {
+      setIsLoading(false);
+      setSubmitting(false);
     }
   };
+
+  // const handleSubmit = async (
+  //   values: any,
+  //   {
+  //     setSubmitting,
+  //     resetForm
+  //   }: {
+  //     setSubmitting: (isSubmitting: boolean) => void;
+  //     resetForm: () => void;
+  //   }
+  // ) => {
+  //   setIsLoading(true);
+  //   // Post the form data to the API
+  //   try {
+  //     const response = await request(
+  //       "POST",
+  //       `/forms/artisan`,
+  //       {
+  //         firstName: values.firstName,
+  //         lastName: values.lastName,
+  //         serviceLocalGov: values.location,
+  //         email: values.email,
+  //         phone: values.phoneNumber,
+  //         emailOrPhone: true,
+  //         serviceType: values.service,
+  //         serviceArea: values.area
+  //       },
+  //       true,
+  //       true,
+  //       "Your details have been submitted successfully. We'll notify you when ZART launches!"
+  //     );
+  //     setIsLoading(false);
+  //     resetForm();
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     console.error("Error submitting form:", error);
+  //   }
+  // };
 
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
