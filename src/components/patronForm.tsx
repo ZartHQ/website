@@ -147,7 +147,8 @@ const PatronForm = () => {
     setIsLoading(true);
     try {
       const formData = {
-        fullName: values.fullName,
+        firstName: values.firstName,
+        lastName: values.lastName,
         location: values.location,
         email: values.email || "",
         phone: values.phoneNumber || "",
@@ -158,7 +159,7 @@ const PatronForm = () => {
         area: values.area
       };
   
-      const response = await fetch("https://formspree.io/f/xyzwbjyb", {
+      const response = await fetch("https://formspree.io/f/mjkwdajv", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
