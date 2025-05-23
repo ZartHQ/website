@@ -152,8 +152,8 @@ const PatronForm = () => {
         location: values.location,
         email: values.email || "",
         phone: values.phoneNumber || "",
-        artisanType: values.service,
-        otherArtisanType: values.artisanTypes || [],
+        artisanType: values.artisanTypes || [],
+        otherArtisanType: values.otherArtisanType || "",
         badExperienceDetails: values.badExperience || "",
         earlyAccess: values.earlyAccess,
         area: values.area

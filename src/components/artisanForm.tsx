@@ -94,15 +94,13 @@ const ArtisanForm = () => {
     setIsLoading(true);
     try {
       const formData = {
-        fullName: values.fullName,
+        firstName: values.firstName,
+        lastName: values.lastName,
         location: values.location,
         email: values.email || "",
         phone: values.phoneNumber || "",
-        artisanType: values.service,
-        otherArtisanType: values.otherService || "",
-        badExperienceDetails: values.badExperience || "",
+        serviceType: values.service,
         earlyAccess: values.earlyAccess,
-        area: values.area
       };
 
       const response = await fetch("https://formspree.io/f/xdkgpznl", {
