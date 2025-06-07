@@ -97,6 +97,7 @@ const ArtisanForm = () => {
         firstName: values.firstName,
         lastName: values.lastName,
         location: values.location,
+        area: values.area,
         email: values.email || "",
         phone: values.phoneNumber || "",
         serviceType: values.service,
