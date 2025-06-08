@@ -104,7 +104,7 @@ const ArtisanForm = () => {
         earlyAccess: values.earlyAccess,
       };
 
-      const response = await fetch("https://formspree.io/f/movwapgy", {
+      const response = await fetch("https://formspree.io/f/xgvyaeog", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

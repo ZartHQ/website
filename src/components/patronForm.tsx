@@ -159,7 +159,7 @@ const PatronForm = () => {
         area: values.area
       };
   
-      const response = await fetch("https://formspree.io/f/xzzgpknj", {
+      const response = await fetch("https://formspree.io/f/xzzgebdw", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
