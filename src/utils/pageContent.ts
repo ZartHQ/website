@@ -3,8 +3,8 @@ import { ContentConfig } from "./type";
 export const PATRON_CONTENT: ContentConfig = {
   title: "Need an Artisan?\nWe know a guy",
   description:
-    "Vetted artisans, finally!",
-  buttonText: "Book an artisan",
+    "Join the waitlist and be the first to know when we launch in your area!",
+  buttonText: "Join the waitlist",
   marqueeText:
     "100+ VETTED ARTISANS  QUALITY YOU CAN TRUST  WALLET FRIENDLY PRICES",
   formLink: "/form",

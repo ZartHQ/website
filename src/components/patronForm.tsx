@@ -159,7 +159,7 @@ const PatronForm = () => {
         area: values.area
       };
   
-      const response = await fetch("https://tally.so/r/3NvDMQ", {
+      const response = await fetch("https://formspree.io/f/mjkrzeon", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -331,7 +331,7 @@ const PatronForm = () => {
               {/* Artisan Types */}
               <div>
                 <label className="block text-[#0C1E22] font-bold mb-2">
-                  What kind of artisan do you usually need help with?
+                  What kind of artisan do you need help with?
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {artisanTypes.map((type) => (
