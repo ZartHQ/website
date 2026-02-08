@@ -96,7 +96,6 @@ const initialValues: ArtisanRequestForm = {
   badExperience: "",
   preferredDate: "",
   otherArtisanType: "",
-  area: "",
   agreeToTerms: false,
   earlyAccess: ""
 };
