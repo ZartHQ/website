@@ -82,7 +82,16 @@ const validationSchema = Yup.object().shape({
     is: (types: string[]) => types?.includes("Other"),
     then: (schema) => schema.required("Please specify the artisan type")
   }),
-  preferredDate: Yup.string().optional(),
+  preferredDate: Yup.string()
+    .optional()
+    .test('is-future-date', 'Please select a date from tomorrow onwards', function(value) {
+      if (!value) return true; // Optional field
+      const selectedDate = new Date(value);
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      return selectedDate >= tomorrow;
+    }),
   agreeToTerms: Yup.boolean().oneOf([true], "You must agree to the Terms & Conditions and Privacy Policy"),
   earlyAccess: Yup.string().required("Please select an option")
 });
@@ -94,10 +103,10 @@ const initialValues: ArtisanRequestForm = {
   phoneNumber: "",
   email: "",
   artisanTypes: [],
-  area: "",
   issueDetail: "",
   preferredDate: "",
   otherArtisanType: "",
+  area: "",
   agreeToTerms: false,
   earlyAccess: ""
 };
@@ -415,6 +424,7 @@ const PatronForm = () => {
                   name="preferredDate"
                   min={tomorrowString}
                   className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onKeyDown={(e: React.KeyboardEvent) => e.preventDefault()} // Prevent manual typing
                 />
                 <ErrorMessage
                   name="preferredDate"
