@@ -49,7 +49,8 @@ export interface ArtisanRequestForm {
   email?: string;
   artisanTypes: ArtisanType[];
   otherArtisanType?: string;
-  badExperience?: string;
+  area?: string;
+  issueDetail?: string;
   preferredDate?: string;
   agreeToTerms: boolean;
   earlyAccess: "Yes, absolutely" | "Maybe later" | "Not interested" | "";
@@ -93,7 +94,8 @@ const initialValues: ArtisanRequestForm = {
   phoneNumber: "",
   email: "",
   artisanTypes: [],
-  badExperience: "",
+  area: "",
+  issueDetail: "",
   preferredDate: "",
   otherArtisanType: "",
   agreeToTerms: false,
@@ -132,7 +134,7 @@ const PatronForm = () => {
   //         otherArtisanType: values.otherArtisanType,
   //         email: values.email,
   //         phone: values.phoneNumber,
-  //         badExperience: values.badExperience,
+  //         issueDetail: values.issueDetail,
   //         earlyAccessPreference: values.earlyAccess
   //       },
   //       true,
@@ -172,7 +174,7 @@ const PatronForm = () => {
       formData.append("phoneNumber", values.phoneNumber || "");
       formData.append("artisanTypes", (values.artisanTypes || []).join(", "));
       formData.append("otherArtisanType", values.otherArtisanType || "");
-      formData.append("badExperience", values.badExperience || "");
+      formData.append("issueDetail", values.issueDetail || "");
       formData.append("preferredDate", values.preferredDate || "");
       formData.append("earlyAccess", values.earlyAccess);
       formData.append("agreeToTerms", values.agreeToTerms ? "Yes" : "No");
@@ -403,14 +405,32 @@ const PatronForm = () => {
                 </div>
               )}
 
-              {/* Bad Experience */}
+              {/* Preferred Date */}
+              <div>
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  Preferred Date
+                </label>
+                <Field
+                  type="date"
+                  name="preferredDate"
+                  min={tomorrowString}
+                  className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <ErrorMessage
+                  name="preferredDate"
+                  component="div"
+                  className="text-[#B42318] mt-1 text-sm"
+                />
+              </div>
+
+              {/* Issue Detail */}
               <div>
                 <label className="block text-[#0C1E22] font-bold mb-2">
                   Briefly describe the issue
                 </label>
                 <Field
                   as="textarea"
-                  name="badExperience"
+                  name="issueDetail"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-24"
                   placeholder="Let us know what you need!"
                 />
