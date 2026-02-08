@@ -482,7 +482,7 @@ const PatronForm = () => {
                 type="submit"
                 disabled={!(isValid && dirty) || isLoading}
                 className="w-full bg-[#FFC600] text-gray-800 py-3 px-6 rounded-lg font-semibold transition-colors duration-200 cursor-pointer disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
-                {isLoading ? "Submitting..." : "Join the waitlist"}
+                {isLoading ? "Submitting..." : "Submit"}
               </Button>
             </Form>
           );
