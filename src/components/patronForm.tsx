@@ -71,7 +71,7 @@ const validationSchema = Yup.object().shape({
     .required("Phone number is required")
     .matches(
       nigerianPhoneRegex,
-      "Please enter a valid Nigerian phone number (e.g., 08012345678 or +2348012345678)"
+      "Please enter a valid Nigerian phone number"
     ),
   email: Yup.string().email("Invalid email").optional(),
   artisanTypes: Yup.array()

@@ -73,8 +73,7 @@ const initialValues = {
   service: "",
   otherService: "",
   badExperience: "",
-  earlyAccess: "",
-  area: ""
+  earlyAccess: ""
 };
 
 const ArtisanForm = () => {
