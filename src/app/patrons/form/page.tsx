@@ -12,7 +12,7 @@ const PatronFormPage = () => {
           We know a guy
         </>
       }
-      description="We’ll connect you with the right person, close to home, and within your budget - every time"
+      description="Request a verified artisan by filling this form, and we'll contact you on WhatsApp to confirm availability and details, same-day booking isn't guaranteed, and we may need photos or video of the job."
       formComponent={<PatronForm />}
       selectedForm="patron"
     />

@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { Button } from "./button";
 import request from "@/utils/api";
 import { showToast } from "@/utils/toast";
+const nigerianPhoneRegex = /^(\+?234|0)[7-9][0-1]\d{8}$/;
 
 const areasData = {
   "Lagos Mainland": [
@@ -45,10 +46,12 @@ export interface ArtisanRequestForm {
   lastName: string;
   location: string;
   phoneNumber: string;
-  email: string;
+  email?: string;
   artisanTypes: ArtisanType[];
   otherArtisanType?: string;
   badExperience?: string;
+  preferredDate?: string;
+  agreeToTerms: boolean;
   earlyAccess: "Yes, absolutely" | "Maybe later" | "Not interested" | "";
 }
 
@@ -64,8 +67,13 @@ const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
   location: Yup.string().required("Please select a location"),
-  phoneNumber: Yup.string().required("Phone number is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
+  phoneNumber: Yup.string()
+    .required("Phone number is required")
+    .matches(
+      nigerianPhoneRegex,
+      "Please enter a valid Nigerian phone number (e.g., 08012345678 or +2348012345678)"
+    ),
+  email: Yup.string().email("Invalid email").optional(),
   artisanTypes: Yup.array()
     .min(1, "Please select at least one artisan type")
     .required("Please select an artisan type"),
@@ -73,6 +81,8 @@ const validationSchema = Yup.object().shape({
     is: (types: string[]) => types?.includes("Other"),
     then: (schema) => schema.required("Please specify the artisan type")
   }),
+  preferredDate: Yup.string().optional(),
+  agreeToTerms: Yup.boolean().oneOf([true], "You must agree to the Terms & Conditions and Privacy Policy"),
   earlyAccess: Yup.string().required("Please select an option")
 });
 
@@ -84,6 +94,10 @@ const initialValues: ArtisanRequestForm = {
   email: "",
   artisanTypes: [],
   badExperience: "",
+  preferredDate: "",
+  otherArtisanType: "",
+  area: "",
+  agreeToTerms: false,
   earlyAccess: ""
 };
 
@@ -138,50 +152,67 @@ const PatronForm = () => {
     values: any,
     {
       setSubmitting,
-      resetForm
+      resetForm,
+      setFieldValue
     }: {
       setSubmitting: (isSubmitting: boolean) => void;
       resetForm: () => void;
+      setFieldValue: (field: string, value: any) => void;
     }
   ) => {
     setIsLoading(true);
     try {
-      const formData = {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        location: values.location,
-        email: values.email || "",
-        phone: values.phoneNumber || "",
-        artisanType: values.artisanTypes || [],
-        otherArtisanType: values.otherArtisanType || "",
-        badExperienceDetails: values.badExperience || "",
-        earlyAccess: values.earlyAccess,
-        area: values.area
-      };
+      console.log('[FORM] Starting form submission to Formspree');
+      
+      const formData = new FormData();
+      formData.append("firstName", values.firstName);
+      formData.append("lastName", values.lastName);
+      formData.append("location", values.location);
+      formData.append("area", values.area || "");
+      formData.append("email", values.email || "");
+      formData.append("phoneNumber", values.phoneNumber || "");
+      formData.append("artisanTypes", (values.artisanTypes || []).join(", "));
+      formData.append("otherArtisanType", values.otherArtisanType || "");
+      formData.append("badExperience", values.badExperience || "");
+      formData.append("preferredDate", values.preferredDate || "");
+      formData.append("earlyAccess", values.earlyAccess);
+      formData.append("agreeToTerms", values.agreeToTerms ? "Yes" : "No");
   
       const response = await fetch("https://formspree.io/f/mjkrzeon", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Accept: "application/json"
         },
-        body: JSON.stringify(formData)
+        body: formData
       });
   
-      if (!response.ok) throw new Error("Form submission failed");
+      if (!response.ok) {
+        const text = await response.text().catch(() => "");
+        throw new Error(`Form submission failed with status ${response.status}`);
+      }
   
-      const result = await response.json();
-      console.log("Form submitted successfully:", result);
-      showToast("Your details have been submitted successfully. We'll notify you when ZART launches!");
+      console.log("Form submitted successfully to Formspree");
+      showToast("You’re all set.. We'll text you on whatsapp shortly!", 'success');
       resetForm();
     } catch (error) {
-      console.error("Error submitting form:", error);
-      showToast("There was an error submitting your form. Please try again later.");
+      console.error('[FORM] Error submitting form:', error);
+      
+      let msg = "There was an error submitting your form. Please try again later.";
+      if (error instanceof Error) {
+        msg = error.message;
+      }
+      
+      showToast(msg, 'error');
     } finally {
       setIsLoading(false);
       setSubmitting(false);
     }
   };
+
+  // Tomorrow's date in YYYY-MM-DD for date input min attribute (today should NOT be selectable)
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowString = tomorrow.toISOString().slice(0, 10);
 
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
@@ -295,7 +326,7 @@ const PatronForm = () => {
               {/* Phone Number */}
               <div>
                 <label className="block text-[#0C1E22] font-bold mb-2">
-                  Phone number (WhatsApp preferred) <span className="text-[#B42318]">*</span>
+                  Phone number (WhatsApp) <span className="text-[#B42318]">*</span>
                 </label>
                 <Field
                   type="tel"
@@ -313,7 +344,7 @@ const PatronForm = () => {
               {/* Email */}
               <div>
                 <label className="block text-[#0C1E22] font-bold mb-2">
-                  Email address <span className="text-[#B42318]">*</span>
+                  Email address
                 </label>
                 <Field
                   type="email"
@@ -376,13 +407,13 @@ const PatronForm = () => {
               {/* Bad Experience */}
               <div>
                 <label className="block text-[#0C1E22] font-bold mb-2">
-                  Have you ever had a bad experience with an artisan?
+                  Briefly describe the issue
                 </label>
                 <Field
                   as="textarea"
                   name="badExperience"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-24"
-                  placeholder="Feel free to share — we're solving this!"
+                  placeholder="Let us know what you need!"
                 />
               </div>
 
@@ -408,6 +439,40 @@ const PatronForm = () => {
                 </div>
                 <ErrorMessage
                   name="earlyAccess"
+                  component="div"
+                  className="text-[#B42318] mt-1 text-sm"
+                />
+              </div>
+
+              {/* Terms & Conditions Agreement */}
+              <div>
+                <label className="inline-flex items-start">
+                  <Field
+                    type="checkbox"
+                    name="agreeToTerms"
+                    className="form-checkbox mt-1"
+                  />
+                  <span className="ml-3 text-[#515152] text-sm">
+                    By clicking Submit, you agree to{" "}
+                    <a
+                      href="https://drive.google.com/file/d/1M9LLKWNMrVMMwOoUrCt68bZzGkTUSY81/view?usp=drive_link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline">
+                      Zart's Terms & Conditions
+                    </a>{" "}
+                    and{" "}
+                    <a
+                      href="https://drive.google.com/file/d/1pXzVfRNZBxWPaaiMKSWrlhEq6Ue6PXsn/view?usp=drive_link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline">
+                      Privacy Policy
+                    </a>
+                  </span>
+                </label>
+                <ErrorMessage
+                  name="agreeToTerms"
                   component="div"
                   className="text-[#B42318] mt-1 text-sm"
                 />
