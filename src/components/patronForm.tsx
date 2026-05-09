@@ -53,6 +53,8 @@ export interface ArtisanRequestForm {
   otherArtisanType?: string;
   badExperience?: string;
   earlyAccess: "Yes, absolutely" | "Maybe later" | "Not interested" | "";
+  howDidYouHear: string;
+  otherHowDidYouHear?: string;
 }
 
 const artisanTypes: ArtisanType[] = [
@@ -81,7 +83,12 @@ const validationSchema = Yup.object().shape({
     is: (types: string[]) => types?.includes("Other"),
     then: (schema) => schema.required("Please specify the artisan type")
   }),
-  earlyAccess: Yup.string().required("Please select an option")
+  earlyAccess: Yup.string().required("Please select an option"),
+  howDidYouHear: Yup.string().required("Please select how you heard about us"),
+  otherHowDidYouHear: Yup.string().when("howDidYouHear", {
+    is: "Other (please specify)",
+    then: (schema) => schema.required("Please specify how you heard about us")
+  })
 });
 
 const initialValues: ArtisanRequestForm = {
@@ -92,7 +99,9 @@ const initialValues: ArtisanRequestForm = {
   email: "",
   artisanTypes: [],
   badExperience: "",
-  earlyAccess: ""
+  earlyAccess: "",
+  howDidYouHear: "",
+  otherHowDidYouHear: ""
 };
 
 const phoneInputStyles = `
@@ -151,7 +160,9 @@ const PatronForm = () => {
           email: values.email,
           phone: values.phoneNumber,
           badExperience: values.badExperience,
-          earlyAccessPreference: values.earlyAccess
+          earlyAccessPreference: values.earlyAccess,
+          howDidYouHear: values.howDidYouHear,
+          otherHowDidYouHear: values.otherHowDidYouHear
         },
         true,
         true,
@@ -375,6 +386,53 @@ const PatronForm = () => {
                 />
               </div>
 
+              {/* How Did You Hear About Us */}
+              <div>
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  How did you hear about us? <span className="text-[#B42318]">*</span>
+                </label>
+                <Field
+                  as="select"
+                  name="howDidYouHear"
+                  className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select an option</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="TikTok">TikTok</option>
+                  <option value="Threads">Threads</option>
+                  <option value="X (Twitter)">X (Twitter)</option>
+                  <option value="Google/Search">Google/Search</option>
+                  <option value="Friend or Referral">Friend or Referral</option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Other (please specify)">Other (please specify)</option>
+                </Field>
+                <ErrorMessage
+                  name="howDidYouHear"
+                  component="div"
+                  className="text-[#B42318] mt-1 text-sm"
+                />
+              </div>
+
+              {/* Other How Did You Hear */}
+              {values.howDidYouHear === "Other (please specify)" && (
+                <div>
+                  <label className="block text-[#0C1E22] font-bold mb-2">
+                    Please specify
+                  </label>
+                  <Field
+                    type="text"
+                    name="otherHowDidYouHear"
+                    className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="How did you hear about us?"
+                  />
+                  <ErrorMessage
+                    name="otherHowDidYouHear"
+                    component="div"
+                    className="text-[#B42318] mt-1 text-sm"
+                  />
+                </div>
+              )}
+
               {/* Early Access */}
               <div>
                 <label className="block text-[#0C1E22] font-bold mb-2">
@@ -401,7 +459,6 @@ const PatronForm = () => {
                   className="text-[#B42318] mt-1 text-sm"
                 />
               </div>
-
               {/* Submit Button */}
               <Button
                 type="submit"

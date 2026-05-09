@@ -69,7 +69,12 @@ const validationSchema = Yup.object().shape({
     }),
   email: Yup.string().email("Invalid email format").nullable(),
   service: Yup.string().required("Please specify the service you offer"),
-  earlyAccess: Yup.string().required("Please select an option")
+  earlyAccess: Yup.string().required("Please select an option"),
+  howDidYouHear: Yup.string().required("Please select how you heard about us"),
+  otherHowDidYouHear: Yup.string().when("howDidYouHear", {
+    is: "Other (please specify)",
+    then: (schema) => schema.required("Please specify how you heard about us")
+  })
 });
 
 // Initial form values
@@ -83,7 +88,9 @@ const initialValues = {
   otherService: "",
   badExperience: "",
   earlyAccess: "",
-  area: ""
+  area: "",
+  howDidYouHear: "",
+  otherHowDidYouHear: ""
 };
 
 // Custom CSS to override and match existing styles
@@ -139,7 +146,9 @@ const ArtisanForm = () => {
           phone: values.phoneNumber,
           emailOrPhone: true,
           serviceType: values.service,
-          serviceArea: values.area
+          serviceArea: values.area,
+          howDidYouHear: values.howDidYouHear,
+          otherHowDidYouHear: values.otherHowDidYouHear
         },
         true,
         true,
@@ -326,6 +335,53 @@ const ArtisanForm = () => {
                   className="text-[#B42318] mt-1 text-sm"
                 />
               </div>
+
+              {/* How Did You Hear About Us */}
+              <div>
+                <label className="block text-[#0C1E22] font-bold mb-2">
+                  How did you hear about us? <span className="text-[#B42318]">*</span>
+                </label>
+                <Field
+                  as="select"
+                  name="howDidYouHear"
+                  className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select an option</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="TikTok">TikTok</option>
+                  <option value="Threads">Threads</option>
+                  <option value="X (Twitter)">X (Twitter)</option>
+                  <option value="Google/Search">Google/Search</option>
+                  <option value="Friend or Referral">Friend or Referral</option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Other (please specify)">Other (please specify)</option>
+                </Field>
+                <ErrorMessage
+                  name="howDidYouHear"
+                  component="div"
+                  className="text-[#B42318] mt-1 text-sm"
+                />
+              </div>
+
+              {/* Other How Did You Hear */}
+              {values.howDidYouHear === "Other (please specify)" && (
+                <div>
+                  <label className="block text-[#0C1E22] font-bold mb-2">
+                    Please specify
+                  </label>
+                  <Field
+                    type="text"
+                    name="otherHowDidYouHear"
+                    className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="How did you hear about us?"
+                  />
+                  <ErrorMessage
+                    name="otherHowDidYouHear"
+                    component="div"
+                    className="text-[#B42318] mt-1 text-sm"
+                  />
+                </div>
+              )}
 
               {/* Early Access */}
               <div>
