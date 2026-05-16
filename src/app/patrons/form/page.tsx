@@ -8,11 +8,10 @@ const PatronFormPage = () => {
     <FormContainer
       title={
         <>
-          Need an Artisan? <br />
-          We know a guy
+          Need an Artisan? 
         </>
       }
-      description="We’ll connect you with the right person, close to home, and within your budget - every time"
+      description="Fill out this form, and we’ll contact you on WhatsApp in a few minutes to confirm details."
       formComponent={<PatronForm />}
       selectedForm="patron"
     />
