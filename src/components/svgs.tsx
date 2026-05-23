@@ -908,7 +908,7 @@ export const PatronSVG = () => {
           stroke="#6585D3"
           strokeWidth="0.788428"
           strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke-linejoin="round"
         />
         <path
           d="M1130.46 162.742C1124.11 157.744 1115.62 161.623 1115.55 167.899C1115.48 174.19 1124.71 180.545 1132.05 178.495C1132.05 178.495 1141.18 206.642 1162.58 205.917C1183.98 205.191 1186.6 163.862 1183.18 147.731C1183.18 147.731 1177.45 142.306 1159.46 144.309C1130.62 147.51 1130.46 162.758 1130.46 162.758V162.742Z"
@@ -977,7 +977,7 @@ export const PatronSVG = () => {
           stroke="#192338"
           strokeWidth="0.788428"
           strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke-linejoin="round"
         />
         <path
           d="M1165.97 215.047C1174.11 254.516 1192.67 317.937 1200.92 339.871C1209.16 361.789 1216.2 379.087 1216.2 379.087C1216.2 379.087 1205.43 303.177 1206.07 264.497C1206.72 225.817 1198.52 226.369 1198.52 226.369L1184.19 223.168L1165.96 215.063L1165.97 215.047Z"
@@ -1055,21 +1055,21 @@ export const PatronSVG = () => {
             stroke="#192338"
             strokeWidth="1.57686"
             strokeLinecap="round"
-            strokeLinejoin="round"
+            stroke-linejoin="round"
           />
           <path
             d="M1279.9 224.524C1283.1 213.928 1286.54 202.574 1286.54 202.574"
             stroke="#192338"
             strokeWidth="1.57686"
             strokeLinecap="round"
-            strokeLinejoin="round"
+            stroke-linejoin="round"
           />
           <path
             d="M1270.71 205.334C1270.98 199.988 1271.61 198.49 1271.61 198.49"
             stroke="#192338"
             strokeWidth="1.57686"
             strokeLinecap="round"
-            strokeLinejoin="round"
+            stroke-linejoin="round"
           />
         </g>
         <path
@@ -1086,14 +1086,14 @@ export const PatronSVG = () => {
             stroke="#192338"
             strokeWidth="1.57686"
             strokeLinecap="round"
-            strokeLinejoin="round"
+            stroke-linejoin="round"
           />
           <path
             d="M1227.6 200.793L1220.3 206.627"
             stroke="#192338"
             strokeWidth="1.57686"
             strokeLinecap="round"
-            strokeLinejoin="round"
+            stroke-linejoin="round"
           />
         </g>
         <path
@@ -1111,7 +1111,7 @@ export const PatronSVG = () => {
           stroke="#192338"
           strokeWidth="0.788428"
           strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke-linejoin="round"
         />
         <path
           d="M1038.09 379.75C1019.64 383.96 1014.6 388.438 1013.32 391.277C1011.33 395.708 1074.33 413.305 1080.1 413.069C1085.87 412.832 1094.81 401.432 1094.81 401.432L1038.09 379.75Z"
@@ -1136,14 +1136,14 @@ export const PatronSVG = () => {
           stroke="#6585D3"
           strokeWidth="0.788428"
           strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke-linejoin="round"
         />
         <path
           d="M1035.24 340.09L1035.08 389.808"
           stroke="#6585D3"
           strokeWidth="0.788428"
           strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke-linejoin="round"
         />
         <g style={{ mixBlendMode: "multiply" }} opacity="0.61">
           <path
@@ -1194,7 +1194,7 @@ export const PatronSVG = () => {
           stroke="#4561A8"
           strokeWidth="0.788428"
           strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke-linejoin="round"
         />
         <path
           d="M1094.81 401.432L1067.28 453.5L1010.37 441.059C1010.37 441.059 1008.57 414.079 1013.3 391.277C1019.36 395.961 1057.46 405.737 1080.29 410.988L1094.8 401.432H1094.81Z"
@@ -1245,7 +1245,7 @@ export const PatronSVG = () => {
           stroke="#4561A8"
           strokeWidth="0.788428"
           strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke-linejoin="round"
         />
         <path
           d="M1163.06 179.111C1163.06 179.111 1157.85 179.71 1157.07 183.306C1156.61 185.434 1159.04 185.734 1161.15 184.189C1162.71 183.037 1164.1 181.398 1165.61 181.208C1168.09 180.909 1171.73 185.355 1173.02 184.094C1174.32 182.833 1172.36 178.78 1167.13 178.275L1163.06 179.095V179.111Z"
@@ -4387,7 +4387,7 @@ export const MobilePatronSVG = () => {
           stroke="#6585D3"
           stroke-width="0.551603"
           stroke-linecap="round"
-          strokeLinejoin="round"
+          stroke-linejoin="round"
         />
         <g style={{ mixBlendMode: "multiply" }} opacity="0.61">
           <path
@@ -4430,7 +4430,7 @@ export const MobilePatronSVG = () => {
           stroke="#4561A8"
           stroke-width="0.551603"
           stroke-linecap="round"
-          strokeLinejoin="round"
+          stroke-linejoin="round"
         />
         <path
           d="M272.846 348.34C271.191 343.442 267.275 339.216 262.134 338.014C258.99 337.275 256.066 338.014 253.055 338.974C249.712 340.044 246.457 341.367 243.291 342.879C243.28 342.879 243.258 342.901 243.247 342.901C243.093 342.835 242.894 342.835 242.729 342.989C241.129 344.468 241.758 346.641 242.916 348.207C244.405 350.204 246.722 351.385 248.94 352.366C254.312 354.749 260.446 356.967 266.381 357.077C268.444 357.11 270.838 357.121 272.25 355.466C273.85 353.591 273.574 350.535 272.835 348.34H272.846Z"

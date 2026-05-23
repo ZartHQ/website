@@ -5,9 +5,8 @@ import { Button } from "./button";
 import request from "@/utils/api";
 import PhoneInput from "react-phone-number-input";
 import { isPossiblePhoneNumber, isValidPhoneNumber } from "react-phone-number-input";
-import Link from "next/link";
-import storageUtil from "@/utils/browser-storage";
-import { CheckCircle } from "lucide-react";
+import "react-phone-number-input/style.css";
+import flags from "react-phone-number-input/flags";
 
 // Areas data for the dropdown based on location selection
 const areasData = {
@@ -57,21 +56,6 @@ export interface ServiceProviderForm {
   area: string;
 }
 
-export interface ArtisanFormData {
-  firstName: string;
-  lastName: string;
-  location: string;
-  phoneNumber: string;
-  email: string;
-  service: string;
-  otherService: string;
-  badExperience: string;
-  earlyAccess: string;
-  area: string;
-  howDidYouHear: string;
-  otherHowDidYouHear: string;
-}
-
 // Validation schema
 const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
@@ -93,28 +77,20 @@ const validationSchema = Yup.object().shape({
   })
 });
 
-const getTomorrow = () => {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return d.toISOString().split("T")[0];
-};
-
-// Get initial values from localStorage or return defaults
-const getInitialValues = (): ArtisanFormData => {
-  return {
-    firstName: "",
-    lastName: "",
-    location: "",
-    phoneNumber: "",
-    email: "",
-    service: "",
-    otherService: "",
-    badExperience: "",
-    earlyAccess: "",
-    area: "",
-    howDidYouHear: "",
-    otherHowDidYouHear: ""
-  };
+// Initial form values
+const initialValues = {
+  firstName: "",
+  lastName: "",
+  location: "",
+  phoneNumber: "",
+  email: "",
+  service: "",
+  otherService: "",
+  badExperience: "",
+  earlyAccess: "",
+  area: "",
+  howDidYouHear: "",
+  otherHowDidYouHear: ""
 };
 
 // Custom CSS to override and match existing styles
@@ -145,101 +121,55 @@ const phoneInputStyles = `
 const ArtisanForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [areas, setAreas] = useState<string[]>([]);
-  const [hasLoadedFromStorage, setHasLoadedFromStorage] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleSubmit = async (
     values: any,
     {
+      setSubmitting,
       resetForm
     }: {
+      setSubmitting: (isSubmitting: boolean) => void;
       resetForm: () => void;
     }
   ) => {
     setIsLoading(true);
+    // Post the form data to the API
     try {
-      const response = await fetch("https://formspree.io/f/xeenberl", {
-        method: "POST",
-        headers: {
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
+      const response = await request(
+        "POST",
+        `/forms/artisan`,
+        {
           firstName: values.firstName,
           lastName: values.lastName,
-          service: values.service,
-          location: values.location,
-          area: values.area || "",
+          serviceLocalGov: values.location,
           email: values.email,
           phone: values.phoneNumber,
-          earlyAccess: values.earlyAccess,
+          emailOrPhone: true,
+          serviceType: values.service,
+          serviceArea: values.area,
           howDidYouHear: values.howDidYouHear,
-          otherHowDidYouHear: values.otherHowDidYouHear || ""
-        })
-      });
-
-      if (response.ok) {
-        setIsLoading(false);
-        storageUtil.delete("artisanFormData");
-        resetForm();
-        setSubmitSuccess(true);
-      } else {
-        throw new Error("Form submission failed");
-      }
+          otherHowDidYouHear: values.otherHowDidYouHear
+        },
+        true,
+        true,
+        "Your details have been submitted successfully. We'll notify you when ZART launches!"
+      );
+      setIsLoading(false);
+      resetForm();
     } catch (error) {
       setIsLoading(false);
       console.error("Error submitting form:", error);
-      alert("Error submitting form. Please try again.");
     }
   };
-
-  if (submitSuccess) {
-    return (
-      <div className="bg-white w-full h-full flex justify-center items-center p-6">
-        <div className="text-center max-w-md">
-          <div className="mb-6 flex justify-center">
-            <CheckCircle className="w-20 h-20 text-[#0C1E22]" />
-          </div>
-          <h1 className="text-3xl font-bold text-[#0C1E22] mb-3">Welcome to ZART!</h1>
-          <p className="text-[#515152] text-base mb-2">Your profile has been submitted successfully.</p>
-          <p className="text-[#515152] text-base mb-6">We're excited to have you join our community of trusted artisans! Our team will review your details and you'll hear from us soon via email and WhatsApp. Get ready to start receiving booking requests!</p>
-          <button
-            onClick={() => setSubmitSuccess(false)}
-            className="w-full bg-[#FFC600] text-gray-800 py-3 px-6 rounded-lg font-semibold hover:bg-yellow-500 transition-colors duration-200">
-            Submit Another Profile
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
       <style>{phoneInputStyles}</style>
       <Formik
-        initialValues={getInitialValues()}
+        initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-        enableReinitialize={false}>
+        onSubmit={handleSubmit}>
         {({ values, errors, touched, isValid, dirty, setFieldValue }) => {
-          // Load saved form data from localStorage after mount (to avoid hydration mismatch)
-          useEffect(() => {
-            if (!hasLoadedFromStorage) {
-              const savedValues = storageUtil.getObject<ArtisanFormData>("artisanFormData");
-              console.log("Loading from storage:", savedValues);
-              if (savedValues) {
-                Object.keys(savedValues).forEach((key) => {
-                  setFieldValue(key, (savedValues as any)[key]);
-                });
-              }
-              setHasLoadedFromStorage(true);
-            }
-          }, [setFieldValue]);
-
-          // Log button state for debugging
-          useEffect(() => {
-            console.log("Button state:", { isValid, dirty, hasLoadedFromStorage, buttonEnabled: isValid && (dirty || hasLoadedFromStorage) });
-          }, [isValid, dirty, hasLoadedFromStorage]);
-
           // Update areas when location changes
           useEffect(() => {
             if (values.location) {
@@ -356,6 +286,7 @@ const ArtisanForm = () => {
                     international={false}
                     defaultCountry="NG"
                     countries={["NG"]} // Only allow Nigerian numbers
+                    flags={flags}
                     value={values.phoneNumber}
                     onChange={(value) => setFieldValue("phoneNumber", value || "")}
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -496,11 +427,11 @@ const ArtisanForm = () => {
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={!(isValid && (dirty || hasLoadedFromStorage)) || isLoading}
+                disabled={!(isValid && dirty) || isLoading}
                 isLoading={isLoading}
                 loadingText="Submitting..."
                 className="w-full bg-[#FFC600]  py-3 rounded-lg font-medium transition-colors duration-200  disabled:bg-gray-100 disabled:text-gray-400">
-                {isLoading ? "Submitting..." : "Submit"}
+                {isLoading ? "Submitting..." : "Join the waitlist"}
               </Button>
             </Form>
           );
