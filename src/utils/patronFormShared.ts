@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import CONFIG from "./config";
 
 export const AREAS_DATA = {
   "Lagos Mainland": [
@@ -51,8 +52,6 @@ export const PRIVACY_URL =
   "https://drive.google.com/file/d/1pXzVfRNZBxWPaaiMKSWrlhEq6Ue6PXsn/view?usp=sharing";
 export const REFUND_URL =
   "https://docs.google.com/document/d/1x1RkV6Tk_xtcYEPg-iWRW4H1i-I3dWr6/edit?usp=sharing&ouid=117274641844192403999&rtpof=true&sd=true";
-
-export const FORMSPREE_ENDPOINT = "https://formspree.io/f/xrejweyw";
 
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 
@@ -117,41 +116,58 @@ export const patronValidationSchema = Yup.object().shape({
   )
 });
 
+const fileToDataUrl = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error("Could not read that image"));
+    reader.readAsDataURL(file);
+  });
+
 /**
- * Sends the request as multipart/form-data so an optional photo can ride along.
+ * Posts the request to the Google Apps Script web app, which writes it to a
+ * Sheet, saves any photo to Drive, and emails the team.
  *
- * NOTE: file uploads are not supported on Formspree's free plan. Until the
- * backend is swapped out, the photo will be dropped silently by Formspree
- * while the rest of the fields still come through.
+ * Sent as text/plain on purpose: it keeps this a "simple" CORS request, so the
+ * browser skips the preflight that Apps Script cannot answer.
  */
 export const submitPatronRequest = async (
   values: ArtisanRequestForm,
   photo?: File | null
 ) => {
-  const body = new FormData();
-  body.append("firstName", values.firstName);
-  body.append("lastName", values.lastName);
-  body.append("gender", values.gender);
-  body.append(
-    "location",
-    `${values.location}${values.area ? ` - ${values.area}` : ""}`
-  );
-  body.append("artisanTypes", values.artisanTypes.join(", "));
-  body.append("otherArtisanType", values.otherArtisanType);
-  body.append("email", values.email);
-  body.append("phone", values.phoneNumber);
-  body.append("preferredDate", values.preferredDate);
-  body.append("description", values.description);
-  body.append("howDidYouHear", values.howDidYouHear);
-  body.append("otherHowDidYouHear", values.otherHowDidYouHear);
-  if (photo) body.append("photo", photo, photo.name);
+  if (!CONFIG.REQUEST_ENDPOINT) {
+    throw new Error(
+      "NEXT_PUBLIC_REQUEST_ENDPOINT is not set. See docs/apps-script/README.md"
+    );
+  }
 
-  const response = await fetch(FORMSPREE_ENDPOINT, {
+  const payload: Record<string, unknown> = {
+    firstName: values.firstName,
+    lastName: values.lastName,
+    gender: values.gender,
+    location: `${values.location}${values.area ? ` - ${values.area}` : ""}`,
+    phoneNumber: values.phoneNumber,
+    email: values.email,
+    artisanTypes: values.artisanTypes,
+    otherArtisanType: values.otherArtisanType,
+    preferredDate: values.preferredDate,
+    description: values.description,
+    howDidYouHear: values.howDidYouHear,
+    otherHowDidYouHear: values.otherHowDidYouHear,
+    company: "" // honeypot
+  };
+
+  if (photo) payload.photo = await fileToDataUrl(photo);
+
+  const response = await fetch(CONFIG.REQUEST_ENDPOINT, {
     method: "POST",
-    headers: { Accept: "application/json" },
-    body
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
   });
 
   if (!response.ok) throw new Error("Form submission failed");
-  return response;
+
+  const result = await response.json();
+  if (!result.ok) throw new Error(result.error || "Form submission failed");
+  return result as { ok: true; reference: string };
 };

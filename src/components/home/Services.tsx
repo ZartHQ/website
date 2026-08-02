@@ -11,9 +11,12 @@ export const Services = () => (
         Pricing depends on the job. You see the full breakdown before you pay.
       </p>
 
-      <div className="grid gap-px overflow-hidden rounded-lg border border-zart-line bg-zart-line sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {SERVICES.map((s) => (
-          <div key={s.name} className="bg-white px-5 pb-7 pt-6 transition-colors hover:bg-zart-mist">
+          <div
+            key={s.name}
+            className="rounded-lg border border-zart-line bg-white px-5 pb-7 pt-6 transition-colors hover:border-zart-green hover:bg-zart-mist"
+          >
             <div className="mb-2 font-satoshi text-[17px] font-bold text-zart-ink">{s.name}</div>
             <div className="text-[13.5px] leading-snug text-zart-body">{s.examples}</div>
           </div>

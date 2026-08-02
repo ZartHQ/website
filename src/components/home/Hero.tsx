@@ -16,8 +16,7 @@ export const Hero = () => (
           <span className="text-zart-green">We know a guy.</span>
         </h1>
         <p className="max-w-[46ch] text-lg text-zart-body">
-          Tell us what needs fixing. We send an artisan we&rsquo;ve vetted, and you get every part
-          and every hour written down before you pay a naira.
+          Tell us what needs fixing.
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
