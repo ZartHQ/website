@@ -358,7 +358,7 @@ const ArtisanForm = () => {
                     countries={["NG"]} // Only allow Nigerian numbers
                     value={values.phoneNumber}
                     onChange={(value) => setFieldValue("phoneNumber", value || "")}
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-lg border border-gray-300 focus-within:border-zart-green focus-within:ring-2 focus-within:ring-zart-green/20"
                     placeholder="Enter phone number"
                   />
                 </div>

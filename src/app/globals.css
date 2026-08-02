@@ -1,4 +1,5 @@
 @import url("https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,900,1&display=swap");
+@import "react-phone-number-input/style.css";
 
 @tailwind base;
 @tailwind components;
@@ -110,4 +111,57 @@ body {
 
 .animate-marquee2 {
   animation: marquee2 20s linear infinite;
+}
+
+
+/* ---------------------------------------------------------------------------
+   react-phone-number-input
+   The library ships a stylesheet that was never imported, so the country flag
+   rendered at its natural size — a full-page Nigerian flag behind the field.
+   Imported above; these rules make the control match the other form inputs.
+--------------------------------------------------------------------------- */
+.PhoneInput {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  background: #fff;
+}
+
+.PhoneInputInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: #0C1E22;
+}
+
+.PhoneInputInput::placeholder {
+  color: #9CA3AF;
+}
+
+.PhoneInputCountryIcon {
+  width: 1.5rem;
+  height: 1rem;
+  box-shadow: none;
+}
+
+.PhoneInputCountryIcon img,
+.PhoneInputCountryIconImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* Only Nigeria is selectable, so the dropdown affordance is misleading. */
+.PhoneInputCountrySelectArrow {
+  display: none;
+}
+
+.PhoneInputCountrySelect {
+  cursor: default;
 }
