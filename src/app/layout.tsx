@@ -20,7 +20,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Zart – Trusted Artisans Near You | Book Easily, No Scams",
+  title: "Zart – Artisans you can trust",
   description:
     "Book vetted artisans like plumbers, electricians, and carpenters near you. No stress, no scams – just reliable home services from Zart.",
   applicationName: "Zart",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://zarthq.com/",
     siteName: "Zart",
-    title: "Zart – Trusted Artisans Near You | Book Easily, No Scams",
+    title: "Zart – Artisans you can trust",
     description:
       "Book vetted artisans like plumbers, electricians, and carpenters near you. No stress, no scams – just reliable home services from Zart.",
     images: [
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "https://zarthq.com/",
     creator: "@zarthq",
-    title: "Zart – Trusted Artisans Near You",
+    title: "Zart – Artisans you can trust",
     description:
       "Book reliable, vetted artisans for your home or office – no stress, no scams.",
     images:
