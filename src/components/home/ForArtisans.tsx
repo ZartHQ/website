@@ -3,8 +3,8 @@ import Link from "next/link";
 const BENEFITS = [
   "Jobs matched to your trade and your side of Lagos",
   "We agree the price with the customer, not you",
-  "Paid on completion, every job",
-  "Free to join"
+  "Paid on completion, every job \u2014 we keep 10%",
+  "Free to join, no subscription"
 ];
 
 export const ForArtisans = () => (
@@ -26,7 +26,7 @@ export const ForArtisans = () => (
             href="/artisans/form"
             className="mt-6 inline-block rounded-lg bg-white px-7 py-3.5 font-semibold text-zart-green transition hover:bg-zart-mist"
           >
-            Join the waitlist
+            Sign up as an artisan
           </Link>
         </div>
         <ul className="grid gap-3">

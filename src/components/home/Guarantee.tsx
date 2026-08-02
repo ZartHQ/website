@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { REFUND_URL } from "@/utils/patronFormShared";
 
 export const Guarantee = () => (
   <section id="guarantee" className="pb-16 md:pb-24">
@@ -14,23 +14,24 @@ export const Guarantee = () => (
           <p className="max-w-[52ch] text-[16.5px] text-zart-body">
             Every job Zart sends out is covered by our service guarantee. If something we fixed
             fails, or the work wasn&rsquo;t done properly, contact us and we&rsquo;ll put it right.
-            Read the full{" "}
-            <Link href="/legal/service-guarantee" className="font-medium text-zart-green underline">
-              service guarantee
-            </Link>{" "}
-            and{" "}
-            <Link href="/legal/refunds" className="font-medium text-zart-green underline">
+            Read our full{" "}
+            <a
+              href={REFUND_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-zart-green underline"
+            >
               refund and cancellation policy
-            </Link>
+            </a>
             .
           </p>
         </div>
-        <Link
+        <a
           href="#book"
           className="whitespace-nowrap rounded-lg border border-zart-ink px-7 py-3.5 text-center font-semibold text-zart-ink transition hover:bg-zart-ink hover:text-white"
         >
           Book an artisan
-        </Link>
+        </a>
       </div>
     </div>
   </section>

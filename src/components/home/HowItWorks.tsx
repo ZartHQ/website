@@ -5,10 +5,10 @@ export const HowItWorks = () => (
     <div className="mx-auto max-w-6xl px-4 md:px-8">
       <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zart-body/70">How it works</p>
       <h2 className="mb-3 mt-3 max-w-[22ch] font-satoshi text-3xl font-black leading-tight text-zart-ink md:text-[40px]">
-        Four steps, and you pay at the end
+        Four steps, and your money stays with Zart
       </h2>
       <p className="mb-10 max-w-[52ch] text-lg text-zart-body">
-        No deposit to a stranger. No haggling at your gate.
+        No cash handed to a stranger. No haggling at your gate.
       </p>
 
       <div className="border-t border-zart-line">

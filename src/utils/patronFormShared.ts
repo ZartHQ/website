@@ -26,7 +26,6 @@ export interface ArtisanRequestForm {
   otherArtisanType: string;
   preferredDate: string;
   description: string;
-  earlyAccess: "Yes, absolutely" | "Maybe later" | "Not interested" | "";
   howDidYouHear: string;
   otherHowDidYouHear: string;
   termsAgreed: boolean;
@@ -46,16 +45,16 @@ export const HEARD_OPTIONS = [
   "Friend or Referral", "WhatsApp", "Other (please specify)"
 ];
 
-export const EARLY_ACCESS_OPTIONS = [
-  "Yes, absolutely", "Maybe later", "Not interested"
-] as const;
-
 export const TERMS_URL =
-  "https://drive.google.com/file/d/1M9LLKWNMrVMMwOoUrCt68bZzGkTUSY81/view";
+  "https://drive.google.com/file/d/1M9LLKWNMrVMMwOoUrCt68bZzGkTUSY81/view?usp=drive_link";
 export const PRIVACY_URL =
-  "https://drive.google.com/file/d/1pXzVfRNZBxWPaaiMKSWrlhEq6Ue6PXsn/view";
+  "https://drive.google.com/file/d/1pXzVfRNZBxWPaaiMKSWrlhEq6Ue6PXsn/view?usp=sharing";
+export const REFUND_URL =
+  "https://docs.google.com/document/d/1x1RkV6Tk_xtcYEPg-iWRW4H1i-I3dWr6/edit?usp=sharing&ouid=117274641844192403999&rtpof=true&sd=true";
 
 export const FORMSPREE_ENDPOINT = "https://formspree.io/f/xrejweyw";
+
+export const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export const getTomorrow = () => {
   const d = new Date();
@@ -75,7 +74,6 @@ export const getInitialValues = (): ArtisanRequestForm => ({
   otherArtisanType: "",
   preferredDate: "",
   description: "",
-  earlyAccess: "",
   howDidYouHear: "",
   otherHowDidYouHear: "",
   termsAgreed: false
@@ -104,7 +102,10 @@ export const patronValidationSchema = Yup.object().shape({
     is: (types: string[]) => types?.includes("Other"),
     then: (schema) => schema.required("Please specify the artisan type")
   }),
-  earlyAccess: Yup.string().required("Please select an option"),
+  preferredDate: Yup.string().required("Please pick a date that suits you"),
+  description: Yup.string()
+    .required("Please tell us what the problem is")
+    .min(10, "A little more detail helps us send the right person"),
   howDidYouHear: Yup.string().required("Please select how you heard about us"),
   otherHowDidYouHear: Yup.string().when("howDidYouHear", {
     is: "Other (please specify)",
@@ -116,26 +117,39 @@ export const patronValidationSchema = Yup.object().shape({
   )
 });
 
-/** Posts the request to Formspree. Throws on failure so callers can toast. */
-export const submitPatronRequest = async (values: ArtisanRequestForm) => {
+/**
+ * Sends the request as multipart/form-data so an optional photo can ride along.
+ *
+ * NOTE: file uploads are not supported on Formspree's free plan. Until the
+ * backend is swapped out, the photo will be dropped silently by Formspree
+ * while the rest of the fields still come through.
+ */
+export const submitPatronRequest = async (
+  values: ArtisanRequestForm,
+  photo?: File | null
+) => {
+  const body = new FormData();
+  body.append("firstName", values.firstName);
+  body.append("lastName", values.lastName);
+  body.append("gender", values.gender);
+  body.append(
+    "location",
+    `${values.location}${values.area ? ` - ${values.area}` : ""}`
+  );
+  body.append("artisanTypes", values.artisanTypes.join(", "));
+  body.append("otherArtisanType", values.otherArtisanType);
+  body.append("email", values.email);
+  body.append("phone", values.phoneNumber);
+  body.append("preferredDate", values.preferredDate);
+  body.append("description", values.description);
+  body.append("howDidYouHear", values.howDidYouHear);
+  body.append("otherHowDidYouHear", values.otherHowDidYouHear);
+  if (photo) body.append("photo", photo, photo.name);
+
   const response = await fetch(FORMSPREE_ENDPOINT, {
     method: "POST",
-    headers: { Accept: "application/json", "Content-Type": "application/json" },
-    body: JSON.stringify({
-      firstName: values.firstName,
-      lastName: values.lastName,
-      gender: values.gender,
-      location: `${values.location}${values.area ? ` - ${values.area}` : ""}`,
-      artisanTypes: values.artisanTypes.join(", "),
-      otherArtisanType: values.otherArtisanType,
-      email: values.email,
-      phone: values.phoneNumber,
-      preferredDate: values.preferredDate,
-      description: values.description,
-      earlyAccess: values.earlyAccess,
-      howDidYouHear: values.howDidYouHear,
-      otherHowDidYouHear: values.otherHowDidYouHear
-    })
+    headers: { Accept: "application/json" },
+    body
   });
 
   if (!response.ok) throw new Error("Form submission failed");

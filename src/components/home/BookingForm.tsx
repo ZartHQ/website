@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { CheckCircle } from "lucide-react";
 import storageUtil from "@/utils/browser-storage";
 import {
   AREAS_DATA,
   ARTISAN_TYPES,
-  EARLY_ACCESS_OPTIONS,
   HEARD_OPTIONS,
+  MAX_IMAGE_BYTES,
   PRIVACY_URL,
   TERMS_URL,
   type ArtisanRequestForm,
@@ -35,7 +35,19 @@ const CHIP_OFF =
  * Lives inside <Formik> so hooks run in a real component body rather than
  * inside the render prop.
  */
-const FormBody = ({ loading }: { loading: boolean }) => {
+const FormBody = ({
+  loading,
+  photo,
+  photoError,
+  onPickPhoto,
+  onClearPhoto
+}: {
+  loading: boolean;
+  photo: File | null;
+  photoError: string | null;
+  onPickPhoto: (f: File | null) => void;
+  onClearPhoto: () => void;
+}) => {
   const { values, isValid, dirty, setFieldValue } =
     useFormikContext<ArtisanRequestForm>();
   const [restored, setRestored] = useState(false);
@@ -174,12 +186,13 @@ const FormBody = ({ loading }: { loading: boolean }) => {
       )}
 
       <div className="mt-5">
-        <label className={LABEL} htmlFor="preferredDate">Preferred date</label>
+        <label className={LABEL} htmlFor="preferredDate">Preferred date *</label>
         <Field id="preferredDate" name="preferredDate" type="date" min={getTomorrow()} className={INPUT} />
+        <ErrorMessage name="preferredDate" component="div" className={ERROR} />
       </div>
 
       <div className="mt-5">
-        <label className={LABEL} htmlFor="description">What&rsquo;s the problem?</label>
+        <label className={LABEL} htmlFor="description">What&rsquo;s the problem? *</label>
         <Field
           as="textarea"
           id="description"
@@ -188,6 +201,35 @@ const FormBody = ({ loading }: { loading: boolean }) => {
           className={`${INPUT} resize-y`}
           placeholder="e.g. Kitchen tap has been dripping for a week and the cabinet underneath is getting wet."
         />
+        <ErrorMessage name="description" component="div" className={ERROR} />
+      </div>
+
+      <div className="mt-5">
+        <label className={LABEL} htmlFor="photo">Add a photo (optional)</label>
+        {photo ? (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-zart-line bg-zart-mist px-4 py-3">
+            <span className="truncate text-sm text-zart-ink">{photo.name}</span>
+            <button
+              type="button"
+              onClick={onClearPhoto}
+              className="shrink-0 text-sm font-semibold text-zart-error underline"
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <input
+            id="photo"
+            type="file"
+            accept="image/*"
+            onChange={(e) => onPickPhoto(e.target.files?.[0] ?? null)}
+            className="w-full cursor-pointer rounded-lg border border-dashed border-zart-line bg-white px-4 py-3 text-sm text-zart-body file:mr-3 file:rounded-md file:border-0 file:bg-zart-mist file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-zart-ink"
+          />
+        )}
+        <p className="mt-1.5 text-[13px] text-zart-body">
+          A picture of the problem helps us send the right person. Max 5&nbsp;MB.
+        </p>
+        {photoError && <div className={ERROR}>{photoError}</div>}
       </div>
 
       <div className="mt-5">
@@ -209,18 +251,6 @@ const FormBody = ({ loading }: { loading: boolean }) => {
         </div>
       )}
 
-      <fieldset className="mt-5">
-        <legend className={LABEL}>Want early access when the Zart app launches? *</legend>
-        <div className="flex flex-wrap gap-x-5 gap-y-2">
-          {EARLY_ACCESS_OPTIONS.map((o) => (
-            <label key={o} className="flex cursor-pointer items-center gap-2 text-[15px] text-zart-ink">
-              <Field type="radio" name="earlyAccess" value={o} className="accent-zart-green" />
-              {o}
-            </label>
-          ))}
-        </div>
-        <ErrorMessage name="earlyAccess" component="div" className={ERROR} />
-      </fieldset>
 
       <div className="mt-5 rounded-lg bg-zart-mist p-4">
         <label className="flex items-start gap-3 text-sm leading-relaxed text-zart-body">
@@ -259,20 +289,37 @@ const FormBody = ({ loading }: { loading: boolean }) => {
 export const BookingForm = () => {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  const pickPhoto = (file: File | null) => {
+    if (file && file.size > MAX_IMAGE_BYTES) {
+      setPhotoError("That image is over 5 MB. Please pick a smaller one.");
+      setPhoto(null);
+      return;
+    }
+    setPhotoError(null);
+    setPhoto(file);
+  };
+
+  /** Bring the confirmation into view instead of leaving the reader mid-page. */
+  const scrollToSection = () => {
+    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
-    <section id="book" className="pb-16 md:pb-24">
+    <section id="book" ref={sectionRef} className="scroll-mt-24 pb-16 md:pb-24">
       <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 md:grid-cols-[0.85fr_1.15fr] md:gap-16 md:px-8">
         <div className="md:sticky md:top-24">
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zart-body/70">
             Book an artisan
           </p>
           <h2 className="mb-3 mt-3 font-satoshi text-3xl font-black leading-tight text-zart-ink md:text-[40px]">
-            Tell us wetin happen
+            Tell us what happened
           </h2>
           <p className="max-w-[46ch] text-lg text-zart-body">
-            We&rsquo;ll message you on WhatsApp within minutes to confirm the details. Nothing is
-            charged until the work is done.
+            We&rsquo;ll message you on WhatsApp within minutes to confirm the details.
           </p>
         </div>
 
@@ -288,7 +335,10 @@ export const BookingForm = () => {
             </p>
             <button
               type="button"
-              onClick={() => setDone(false)}
+              onClick={() => {
+                setDone(false);
+                scrollToSection();
+              }}
               className="rounded-lg bg-zart-gold px-6 py-3 font-bold text-zart-ink transition-colors hover:bg-[#E8B500]"
             >
               Send another request
@@ -301,10 +351,13 @@ export const BookingForm = () => {
             onSubmit={async (values, { resetForm }) => {
               setLoading(true);
               try {
-                await submitPatronRequest(values);
+                await submitPatronRequest(values, photo);
                 storageUtil.delete(STORAGE_KEY);
                 resetForm();
+                setPhoto(null);
+                setPhotoError(null);
                 setDone(true);
+                scrollToSection();
               } catch {
                 alert("Couldn't send your request. Please try again.");
               } finally {
@@ -312,7 +365,16 @@ export const BookingForm = () => {
               }
             }}
           >
-            <FormBody loading={loading} />
+            <FormBody
+              loading={loading}
+              photo={photo}
+              photoError={photoError}
+              onPickPhoto={pickPhoto}
+              onClearPhoto={() => {
+                setPhoto(null);
+                setPhotoError(null);
+              }}
+            />
           </Formik>
         )}
       </div>

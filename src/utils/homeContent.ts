@@ -99,9 +99,9 @@ export const SERVICES = [
 
 export const OBJECTIONS = [
   {
-    quote: "He collected money upfront and stopped picking my calls.",
+    quote: "I paid him half upfront and never saw him again.",
     answer:
-      "You pay Zart when the work is done, not the artisan when he shows up. If something goes wrong, you're talking to a company, not a phone number."
+      "You never hand money to an artisan. You pay Zart, and we only release it to them once the job is done. If something goes wrong, you're dealing with a company, not a phone number."
   },
   {
     quote: "He said he was coming, then nobody showed up all day.",
@@ -117,26 +117,27 @@ export const OBJECTIONS = [
 
 export const STEPS = [
   {
-    title: "Tell us wetin happen",
-    body: "Fill the form with what's wrong, where you are, and when suits you. Takes about a minute."
+    title: "Tell us what happened",
+    body: "Fill the form with what's wrong, where you are, and when suits you. Add a photo if it helps. Takes about a minute."
   },
   {
     title: "We confirm on WhatsApp",
     body: "Someone from Zart messages you within minutes to check the details and agree a time."
   },
   {
-    title: "We tell you who's coming",
-    body: "You get the artisan's name before they arrive. Nobody turns up at your gate unannounced."
+    title: "You get an itemised invoice",
+    body: "Every part and the workmanship, written down. You pay Zart — never the artisan directly — and we tell you who's coming before they arrive."
   },
   {
-    title: "You get an invoice, then you pay",
-    body: "Every part and the workmanship, itemised. Payment is due once the job is finished."
+    title: "The artisan does the job",
+    body: "We release the money to them once the work is finished and you're happy with it."
   }
 ];
 
+import { PRIVACY_URL, REFUND_URL, TERMS_URL } from "./patronFormShared";
+
 export const LEGAL_LINKS = [
-  { label: "Terms & Conditions", href: "/legal/terms" },
-  { label: "Privacy Policy", href: "/legal/privacy" },
-  { label: "Refund & Cancellation Policy", href: "/legal/refunds" },
-  { label: "Service Guarantee & Quality Policy", href: "/legal/service-guarantee" }
+  { label: "Terms & Conditions", href: TERMS_URL },
+  { label: "Privacy Policy", href: PRIVACY_URL },
+  { label: "Refund & Cancellation Policy", href: REFUND_URL }
 ];

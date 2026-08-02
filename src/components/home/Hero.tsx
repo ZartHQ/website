@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { InvoicePreview } from "./InvoicePreview";
 
-const TRUST = ["Vetted artisans", "Itemised invoice", "Pay after the work"];
+const TRUST = ["Vetted artisans", "Itemised invoice", "Zart holds your payment"];
 
 export const Hero = () => (
   <header className="py-12 md:py-20">
@@ -11,9 +11,9 @@ export const Hero = () => (
           Lagos Mainland &amp; Island
         </p>
         <h1 className="my-4 font-satoshi text-4xl font-black leading-[1.03] text-zart-ink md:text-6xl">
-          We know a guy.
+          Need an artisan?
           <br />
-          <span className="text-zart-green">And he gives receipts.</span>
+          <span className="text-zart-green">We know a guy.</span>
         </h1>
         <p className="max-w-[46ch] text-lg text-zart-body">
           Tell us what needs fixing. We send an artisan we&rsquo;ve vetted, and you get every part

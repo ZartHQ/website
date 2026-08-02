@@ -84,8 +84,8 @@ export const InvoicePreview = () => {
         </div>
 
         <div className="bg-zart-ink px-6 py-4 font-mono text-[11.5px] leading-relaxed text-white/75">
-          <strong className="font-bold text-white">Due on receipt.</strong> Parts and workmanship
-          listed separately &mdash; nothing added after the job.
+          <strong className="font-bold text-white">You pay Zart, not the artisan.</strong> Parts and
+          workmanship listed separately &mdash; nothing added after the job.
         </div>
       </article>
     </div>
