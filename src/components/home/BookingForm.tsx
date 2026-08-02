@@ -315,7 +315,7 @@ export const BookingForm = () => {
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zart-body/70">
             Book an artisan
           </p>
-          <h2 className="mb-3 mt-3 font-satoshi text-3xl font-black leading-tight text-zart-ink md:text-[40px]">
+          <h2 className="mb-3 mt-3 font-poppins text-3xl font-bold leading-tight text-zart-ink md:text-[40px]">
             Tell us what happened
           </h2>
           <p className="max-w-[46ch] text-lg text-zart-body">
@@ -326,7 +326,7 @@ export const BookingForm = () => {
         {done ? (
           <div className="rounded-xl border border-zart-line bg-white p-8 text-center md:p-12">
             <CheckCircle className="mx-auto mb-6 h-16 w-16 text-zart-green" />
-            <h3 className="mb-3 font-satoshi text-2xl font-black text-zart-ink">
+            <h3 className="mb-3 font-poppins text-2xl font-bold text-zart-ink">
               Request received
             </h3>
             <p className="mx-auto mb-6 max-w-[42ch] text-zart-body">

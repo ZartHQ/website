@@ -10,7 +10,7 @@ export const Hero = () => (
         <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zart-body/70">
           Lagos Mainland &amp; Island
         </p>
-        <h1 className="my-4 font-satoshi text-4xl font-black leading-[1.03] text-zart-ink md:text-6xl">
+        <h1 className="my-4 font-poppins text-4xl font-bold leading-[1.03] text-zart-ink md:text-6xl">
           Need an artisan?
           <br />
           <span className="text-zart-green">We know a guy.</span>

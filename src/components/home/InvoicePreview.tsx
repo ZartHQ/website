@@ -43,7 +43,7 @@ export const InvoicePreview = () => {
             <span>Zart service invoice</span>
             <strong className="font-bold text-zart-ink">{invoice.ref}</strong>
           </div>
-          <h3 className="mt-3 font-satoshi text-xl font-black leading-tight text-zart-ink md:text-2xl">
+          <h3 className="mt-3 font-poppins text-xl font-bold leading-tight text-zart-ink md:text-2xl">
             {invoice.job}
           </h3>
           <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-5 gap-y-1.5 font-mono text-xs">
