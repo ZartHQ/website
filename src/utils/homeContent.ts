@@ -126,7 +126,7 @@ export const STEPS = [
   },
   {
     title: "You get an itemised invoice",
-    body: "Every part and the workmanship, written down. You pay Zart — never the artisan directly — and we tell you who's coming before they arrive."
+    body: "Every part and the workmanship, written down. You pay Zart, never the artisan directly, and we tell you who's coming before they arrive."
   },
   {
     title: "The artisan does the job",
