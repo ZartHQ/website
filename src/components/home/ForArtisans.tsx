@@ -9,7 +9,7 @@ const BENEFITS = [
 ];
 
 export const ForArtisans = () => (
-  <section id="artisans" className="pb-16 md:pb-24">
+  <section id="artisans" className="pb-12 md:pb-20">
     <div className="mx-auto max-w-6xl px-4 md:px-8">
       <div className="overflow-hidden rounded-xl bg-zart-green text-white">
         <div className="grid items-center gap-8 p-8 pb-0 md:grid-cols-[1.1fr_0.9fr] md:gap-14 md:p-14 md:pb-0">
