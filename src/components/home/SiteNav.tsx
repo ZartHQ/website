@@ -23,7 +23,7 @@ export const SiteNav = () => (
       </div>
       <Link
         href="#book"
-        className="ml-auto rounded-lg bg-zart-ink px-5 py-2.5 text-[15px] font-semibold text-white transition-colors hover:bg-zart-green md:ml-0"
+        className="ml-auto rounded-lg bg-zart-green px-5 py-2.5 text-[15px] font-semibold text-white transition-colors hover:bg-zart-ink md:ml-0"
       >
         Book an artisan
       </Link>

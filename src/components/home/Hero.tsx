@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { InvoicePreview } from "./InvoicePreview";
 
-const TRUST = ["Vetted artisans", "Itemised invoice", "Zart holds your payment"];
+const TRUST = ["Vetted artisans", "Itemised invoice", "Zart escrows your payment"];
 
 export const Hero = () => (
   <header className="py-12 md:py-20">
@@ -22,7 +22,7 @@ export const Hero = () => (
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="#book"
-            className="rounded-lg bg-zart-ink px-7 py-3.5 font-semibold text-white transition hover:bg-zart-green"
+            className="rounded-lg bg-zart-green px-7 py-3.5 font-semibold text-white transition hover:bg-zart-ink"
           >
             Book an artisan
           </Link>
