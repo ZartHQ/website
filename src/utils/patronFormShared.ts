@@ -89,6 +89,9 @@ export const patronValidationSchema = Yup.object().shape({
   }),
   phoneNumber: Yup.string()
     .required("Phone number is required")
+    .transform((value) =>
+      typeof value === "string" ? value.replace(/[\s()\-.]/g, "") : value
+    )
     .matches(
       /^(\+?234|0)[789][01]\d{8}$/,
       "Please enter a valid Nigerian phone number"
@@ -146,7 +149,7 @@ export const submitPatronRequest = async (
     lastName: values.lastName,
     gender: values.gender,
     location: `${values.location}${values.area ? ` - ${values.area}` : ""}`,
-    phoneNumber: values.phoneNumber,
+    phoneNumber: values.phoneNumber.replace(/[\s()\-.]/g, ""),
     email: values.email,
     artisanTypes: values.artisanTypes,
     otherArtisanType: values.otherArtisanType,

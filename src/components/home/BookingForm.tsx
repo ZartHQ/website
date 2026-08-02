@@ -20,7 +20,8 @@ import {
   submitPatronRequest
 } from "@/utils/patronFormShared";
 
-const STORAGE_KEY = "patronFormData";
+const STORAGE_KEY = "patronFormData:v2";
+const LEGACY_STORAGE_KEY = "patronFormData";
 
 const LABEL = "mb-2 block font-mono text-[10.5px] uppercase tracking-[0.12em] text-zart-green";
 const INPUT =
@@ -36,6 +37,38 @@ const CHIP_OFF =
  * Lives inside <Formik> so hooks run in a real component body rather than
  * inside the render prop.
  */
+/** After a failed submit, put the first broken field in front of the reader. */
+const ScrollToFirstError = () => {
+  const { submitCount, isValid, errors } = useFormikContext<ArtisanRequestForm>();
+
+  useEffect(() => {
+    if (submitCount === 0 || isValid) return;
+    const firstKey = Object.keys(errors)[0];
+    if (!firstKey) return;
+    const el =
+      document.querySelector<HTMLElement>(`[name="${firstKey}"]`) ??
+      document.getElementById(firstKey);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    window.setTimeout(() => el?.focus({ preventScroll: true }), 400);
+  }, [submitCount, isValid, errors]);
+
+  return null;
+};
+
+/** Explains a blocked submit, since the button no longer disables itself. */
+const ValidationSummary = () => {
+  const { submitCount, isValid } = useFormikContext<ArtisanRequestForm>();
+  if (submitCount === 0 || isValid) return null;
+  return (
+    <div
+      role="alert"
+      className="mt-6 rounded-lg border border-zart-error/30 bg-zart-error/5 px-4 py-3 text-sm text-zart-error"
+    >
+      Some fields still need attention. We&rsquo;ve highlighted them above.
+    </div>
+  );
+};
+
 const FormBody = ({
   loading,
   photo,
@@ -51,12 +84,15 @@ const FormBody = ({
   onPickPhoto: (f: File | null) => void;
   onClearPhoto: () => void;
 }) => {
-  const { values, isValid, dirty, setFieldValue } =
+  const { values, setFieldValue } =
     useFormikContext<ArtisanRequestForm>();
   const [restored, setRestored] = useState(false);
 
   useEffect(() => {
     if (restored) return;
+    // Drafts saved before the schema changed can hold fields that no longer
+    // exist and values that no longer validate. Bin them.
+    storageUtil.delete(LEGACY_STORAGE_KEY);
     const saved = storageUtil.getObject<ArtisanRequestForm>(STORAGE_KEY);
     if (saved) {
       (Object.keys(saved) as (keyof ArtisanRequestForm)[]).forEach((key) => {
@@ -83,6 +119,7 @@ const FormBody = ({
 
   return (
     <Form className="rounded-xl border border-zart-line bg-white p-6 md:p-8">
+      <ScrollToFirstError />
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className={LABEL} htmlFor="firstName">First name *</label>
@@ -149,7 +186,7 @@ const FormBody = ({
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <div>
           <label className={LABEL} htmlFor="phoneNumber">WhatsApp number *</label>
-          <Field id="phoneNumber" name="phoneNumber" type="tel" className={INPUT} placeholder="0803 000 0000" />
+          <Field id="phoneNumber" name="phoneNumber" type="tel" className={INPUT} placeholder="08030000000" />
           <ErrorMessage name="phoneNumber" component="div" className={ERROR} />
         </div>
         <div>
@@ -273,6 +310,8 @@ const FormBody = ({
         <ErrorMessage name="termsAgreed" component="div" className={ERROR} />
       </div>
 
+      <ValidationSummary />
+
       {submitError && (
         <div
           role="alert"
@@ -284,7 +323,7 @@ const FormBody = ({
 
       <button
         type="submit"
-        disabled={!(isValid && (dirty || restored)) || loading}
+        disabled={loading}
         className="mt-6 w-full rounded-lg bg-zart-gold py-4 text-[16px] font-bold text-zart-ink transition-colors hover:bg-[#E8B500] disabled:cursor-not-allowed disabled:bg-zart-line disabled:text-zart-body"
       >
         {loading ? "Sending…" : "Send request"}
