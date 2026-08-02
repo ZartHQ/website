@@ -23,10 +23,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["var(--font-poppins)", "system-ui", "sans-serif"],
-        poppins: ["var(--font-poppins)", "system-ui", "sans-serif"],
-        satoshi: ["Satoshi", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
+        sans: ["var(--font-outfit)", "system-ui", "sans-serif"],
+        outfit: ["var(--font-outfit)", "system-ui", "sans-serif"]
       },
     },
   },

@@ -10,7 +10,7 @@ const COMPANY = [
 ];
 
 const HEADING =
-  "mb-3 font-mono text-[10.5px] uppercase tracking-[0.12em] text-white/40";
+  "mb-3 font-outfit text-[10.5px] uppercase tracking-[0.12em] text-white/40";
 const ITEM = "block py-1.5 text-[15px] hover:text-white";
 
 export const SiteFooter = () => (
@@ -66,7 +66,7 @@ export const SiteFooter = () => (
         </div>
       </div>
 
-      <div className="mt-10 flex flex-wrap justify-between gap-2 border-t border-white/10 pt-5 font-mono text-[11px]">
+      <div className="mt-10 flex flex-wrap justify-between gap-2 border-t border-white/10 pt-5 font-outfit text-[11px]">
         <span>&copy; {new Date().getFullYear()} Zart</span>
         <span>zarthq.com</span>
       </div>

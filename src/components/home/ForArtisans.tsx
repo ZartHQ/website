@@ -14,10 +14,10 @@ export const ForArtisans = () => (
       <div className="overflow-hidden rounded-xl bg-zart-green text-white">
         <div className="grid items-center gap-8 p-8 pb-0 md:grid-cols-[1.1fr_0.9fr] md:gap-14 md:p-14 md:pb-0">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/60">
+            <p className="font-outfit text-[11px] uppercase tracking-[0.14em] text-white/60">
               For artisans
             </p>
-            <h2 className="mb-4 mt-3 font-poppins text-3xl font-bold leading-tight md:text-4xl">
+            <h2 className="mb-4 mt-3 text-3xl font-bold leading-tight md:text-4xl">
               Looking for customers? We go run am.
             </h2>
             <p className="max-w-[44ch] text-[16.5px] text-white/85">

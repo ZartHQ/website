@@ -23,7 +23,7 @@ import {
 const STORAGE_KEY = "patronFormData:v2";
 const LEGACY_STORAGE_KEY = "patronFormData";
 
-const LABEL = "mb-2 block font-mono text-[10.5px] uppercase tracking-[0.12em] text-zart-green";
+const LABEL = "mb-2 block font-outfit text-[10.5px] uppercase tracking-[0.12em] text-zart-green";
 const INPUT =
   "w-full rounded-lg border border-zart-line bg-white px-4 py-3 text-[15.5px] text-zart-ink transition-colors focus:border-zart-green focus:outline-none";
 const ERROR = "mt-1 text-sm text-zart-error";
@@ -329,7 +329,7 @@ const FormBody = ({
         {loading ? "Sending…" : "Send request"}
       </button>
 
-      <p className="mt-4 font-mono text-[11px] leading-relaxed text-zart-body">
+      <p className="mt-4 font-outfit text-[11px] leading-relaxed text-zart-body">
         We&rsquo;ll confirm on WhatsApp before anyone is sent. You pay after the job, against an
         itemised invoice.
       </p>
@@ -364,10 +364,10 @@ export const BookingForm = () => {
     <section id="book" ref={sectionRef} className="scroll-mt-24 pb-16 md:pb-24">
       <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 md:grid-cols-[0.85fr_1.15fr] md:gap-16 md:px-8">
         <div className="md:sticky md:top-24">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zart-body/70">
+          <p className="font-outfit text-[11px] uppercase tracking-[0.14em] text-zart-body/70">
             Book an artisan
           </p>
-          <h2 className="mb-3 mt-3 font-poppins text-3xl font-bold leading-tight text-zart-ink md:text-[40px]">
+          <h2 className="mb-3 mt-3 text-3xl font-bold leading-tight text-zart-ink md:text-[40px]">
             Tell us what happened
           </h2>
           <p className="max-w-[46ch] text-lg text-zart-body">
@@ -378,7 +378,7 @@ export const BookingForm = () => {
         {done ? (
           <div className="rounded-xl border border-zart-line bg-white p-8 text-center md:p-12">
             <CheckCircle className="mx-auto mb-6 h-16 w-16 text-zart-green" />
-            <h3 className="mb-3 font-poppins text-2xl font-bold text-zart-ink">
+            <h3 className="mb-3 text-2xl font-bold text-zart-ink">
               Request received
             </h3>
             <p className="mx-auto mb-6 max-w-[42ch] text-zart-body">
