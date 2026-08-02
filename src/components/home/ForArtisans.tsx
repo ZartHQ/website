@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArtisanIllustration } from "./ArtisanIllustration";
 
 const BENEFITS = [
   "Jobs matched to your trade and your side of Lagos",
@@ -38,6 +39,8 @@ export const ForArtisans = () => (
           ))}
         </ul>
       </div>
+
+      <ArtisanIllustration />
     </div>
   </section>
 );

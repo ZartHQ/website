@@ -111,3 +111,23 @@ body {
 .animate-marquee2 {
   animation: marquee2 20s linear infinite;
 }
+
+/* Homepage marquee. CSS rather than framer-motion, which cost ~36 kB of
+   First Load JS for one horizontal scroll. */
+@keyframes zart-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.zart-marquee {
+  animation: zart-marquee 30s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zart-marquee {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+}

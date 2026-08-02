@@ -2,6 +2,7 @@ import { SiteNav } from "@/components/home/SiteNav";
 import { Hero } from "@/components/home/Hero";
 import { Objections } from "@/components/home/Objections";
 import { HowItWorks } from "@/components/home/HowItWorks";
+import { MarqueeBand } from "@/components/home/MarqueeBand";
 import { Services } from "@/components/home/Services";
 import { Guarantee } from "@/components/home/Guarantee";
 import { ForArtisans } from "@/components/home/ForArtisans";
@@ -15,6 +16,7 @@ export default function Home() {
       <main>
         <Hero />
         <Objections />
+        <MarqueeBand />
         <HowItWorks />
         <Services />
         <Guarantee />
