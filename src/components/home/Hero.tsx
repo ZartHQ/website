@@ -22,7 +22,7 @@ export const Hero = () => (
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
-            href="/patrons/form"
+            href="#book"
             className="rounded-lg bg-zart-ink px-7 py-3.5 font-semibold text-white transition hover:bg-zart-green"
           >
             Book an artisan

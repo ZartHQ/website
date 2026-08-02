@@ -26,7 +26,7 @@ export const Guarantee = () => (
           </p>
         </div>
         <Link
-          href="/patrons/form"
+          href="#book"
           className="whitespace-nowrap rounded-lg border border-zart-ink px-7 py-3.5 text-center font-semibold text-zart-ink transition hover:bg-zart-ink hover:text-white"
         >
           Book an artisan

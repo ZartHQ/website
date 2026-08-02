@@ -38,7 +38,7 @@ export const SiteFooter = () => (
             <Link href="/#how" className="block py-1 text-[14.5px] hover:text-white">How it works</Link>
             <Link href="/#guarantee" className="block py-1 text-[14.5px] hover:text-white">Our guarantee</Link>
             <Link href="/artisans" className="block py-1 text-[14.5px] hover:text-white">For artisans</Link>
-            <Link href="/patrons/form" className="block py-1 text-[14.5px] hover:text-white">Book an artisan</Link>
+            <Link href="/#book" className="block py-1 text-[14.5px] hover:text-white">Book an artisan</Link>
           </div>
 
           <div>

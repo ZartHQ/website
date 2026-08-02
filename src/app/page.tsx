@@ -5,6 +5,7 @@ import { HowItWorks } from "@/components/home/HowItWorks";
 import { Services } from "@/components/home/Services";
 import { Guarantee } from "@/components/home/Guarantee";
 import { ForArtisans } from "@/components/home/ForArtisans";
+import { BookingForm } from "@/components/home/BookingForm";
 import { SiteFooter } from "@/components/home/SiteFooter";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
         <HowItWorks />
         <Services />
         <Guarantee />
+        <BookingForm />
         <ForArtisans />
       </main>
       <SiteFooter />

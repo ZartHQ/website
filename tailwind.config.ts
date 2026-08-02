@@ -18,6 +18,8 @@ export default {
           body: "#323233",
           line: "#E4E2DC",
           mist: "#F7F6F3",
+          gold: "#FFC600",
+          error: "#B42318",
         },
       },
       fontFamily: {
