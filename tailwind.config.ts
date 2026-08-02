@@ -11,9 +11,22 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        zart: {
+          green: "#015A2F",
+          "green-dark": "#014022",
+          ink: "#0C1E22",
+          body: "#323233",
+          line: "#E4E2DC",
+          mist: "#F7F6F3",
+          gold: "#FFC600",
+          error: "#B42318",
+        },
       },
       fontFamily: {
+        sans: ["var(--font-poppins)", "system-ui", "sans-serif"],
+        poppins: ["var(--font-poppins)", "system-ui", "sans-serif"],
         satoshi: ["Satoshi", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
       },
     },
   },
