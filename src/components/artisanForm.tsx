@@ -3,8 +3,6 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "./button";
 import request from "@/utils/api";
-import PhoneInput from "react-phone-number-input";
-import { isPossiblePhoneNumber, isValidPhoneNumber } from "react-phone-number-input";
 import Link from "next/link";
 import storageUtil from "@/utils/browser-storage";
 import { CheckCircle } from "lucide-react";
@@ -79,10 +77,13 @@ const validationSchema = Yup.object().shape({
   location: Yup.string().required("Location is required"),
   phoneNumber: Yup.string()
     .required("Phone number is required")
-    .test("is-valid-phone", "Please enter a valid Nigerian phone number", function(value) {
-      if (!value) return false;
-      return isPossiblePhoneNumber(value) && isValidPhoneNumber(value);
-    }),
+    .transform((value) =>
+      typeof value === "string" ? value.replace(/[\s()\-.]/g, "") : value
+    )
+    .matches(
+      /^(\+?234|0)[789][01]\d{8}$/,
+      "Please enter a valid Nigerian phone number"
+    ),
   email: Yup.string().email("Invalid email format").nullable(),
   service: Yup.string().required("Please specify the service you offer"),
   earlyAccess: Yup.string().required("Please select an option"),
@@ -117,30 +118,6 @@ const getInitialValues = (): ArtisanFormData => {
   };
 };
 
-// Custom CSS to override and match existing styles
-const phoneInputStyles = `
-  .PhoneInput {
-    width: 100%;
-  }
-  .PhoneInputInput {
-    width: 100%;
-    height: 48px;
-    padding: 0 16px;
-    // border: 1px solid #E5E7EB;
-    border-radius: 8px;
-    outline: none;
-    transition: all 0.2s;
-    font-size: 16px;
-  }
-  .PhoneInputInput:focus {
-    border-color: #3B82F6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-  }
-  .PhoneInputCountry {
-    margin-right: 8px;
-    margin-left: 10px;
-  }
-`;
 
 const ArtisanForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -214,7 +191,6 @@ const ArtisanForm = () => {
 
   return (
     <div className="bg-white w-full h-full flex justify-center items-center">
-      <style>{phoneInputStyles}</style>
       <Formik
         initialValues={getInitialValues()}
         validationSchema={validationSchema}
@@ -351,15 +327,16 @@ const ArtisanForm = () => {
                 <label className="block text-[#0C1E22] font-bold mb-2">
                   Phone number (WhatsApp preferred)<span className="text-[#B42318]">*</span>
                 </label>
-                <div className="phone-input-container">
-                  <PhoneInput
-                    international={false}
-                    defaultCountry="NG"
-                    countries={["NG"]} // Only allow Nigerian numbers
-                    value={values.phoneNumber}
-                    onChange={(value) => setFieldValue("phoneNumber", value || "")}
-                    className="w-full rounded-lg border border-gray-300 focus-within:border-zart-green focus-within:ring-2 focus-within:ring-zart-green/20"
-                    placeholder="Enter phone number"
+                <div className="flex w-full items-center rounded-lg border border-gray-300 bg-white focus-within:border-zart-green focus-within:ring-2 focus-within:ring-zart-green/20">
+                  <span className="select-none border-r border-gray-300 px-4 py-4 text-[#515152]">
+                    &#127475;&#127468; +234
+                  </span>
+                  <Field
+                    type="tel"
+                    inputMode="tel"
+                    name="phoneNumber"
+                    className="min-w-0 flex-1 rounded-r-lg px-4 py-4 focus:outline-none"
+                    placeholder="8030000000"
                   />
                 </div>
                 <ErrorMessage
