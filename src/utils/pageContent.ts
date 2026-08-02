@@ -15,7 +15,7 @@ export const ARTISAN_CONTENT: ContentConfig = {
   title: "Looking for customers?\nWe go run am",
   description:
     "Sign up as an artisan and get matched with real people who need what you do best",
-  buttonText: "Join the waitlist",
+  buttonText: "Sign up as an artisan",
   marqueeText: "INCREASE YOUR REVENUE  GROW YOUR CUSTOMER BASE",
   formLink: "/form",
   name: "artisan",

@@ -15,7 +15,7 @@ export const ForArtisans = () => (
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/60">
             For artisans
           </p>
-          <h2 className="mb-4 mt-3 font-satoshi text-3xl font-black leading-tight md:text-4xl">
+          <h2 className="mb-4 mt-3 font-poppins text-3xl font-bold leading-tight md:text-4xl">
             Looking for customers? We go run am.
           </h2>
           <p className="max-w-[44ch] text-[16.5px] text-white/85">

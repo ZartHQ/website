@@ -8,7 +8,7 @@ export const Guarantee = () => (
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zart-body/70">
             Our guarantee
           </p>
-          <h2 className="mb-3 mt-3 font-satoshi text-3xl font-black leading-tight text-zart-ink md:text-4xl">
+          <h2 className="mb-3 mt-3 font-poppins text-3xl font-bold leading-tight text-zart-ink md:text-4xl">
             If the work isn&rsquo;t right, tell us
           </h2>
           <p className="max-w-[52ch] text-[16.5px] text-zart-body">
