@@ -1,14 +1,25 @@
-"use client"
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { SiteNav } from "@/components/home/SiteNav";
+import { Hero } from "@/components/home/Hero";
+import { Objections } from "@/components/home/Objections";
+import { HowItWorks } from "@/components/home/HowItWorks";
+import { Services } from "@/components/home/Services";
+import { Guarantee } from "@/components/home/Guarantee";
+import { ForArtisans } from "@/components/home/ForArtisans";
+import { SiteFooter } from "@/components/home/SiteFooter";
 
 export default function Home() {
-  const router = useRouter();
-  
-  useEffect(() => {
-    router.replace('/patrons');
-  }, [router]);
-  
-  return null;
+  return (
+    <div className="bg-white">
+      <SiteNav />
+      <main>
+        <Hero />
+        <Objections />
+        <HowItWorks />
+        <Services />
+        <Guarantee />
+        <ForArtisans />
+      </main>
+      <SiteFooter />
+    </div>
+  );
 }
