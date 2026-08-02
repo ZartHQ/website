@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { CheckCircle } from "lucide-react";
 import storageUtil from "@/utils/browser-storage";
+import { showToast } from "@/utils/toast";
 import {
   AREAS_DATA,
   ARTISAN_TYPES,
@@ -39,12 +40,14 @@ const FormBody = ({
   loading,
   photo,
   photoError,
+  submitError,
   onPickPhoto,
   onClearPhoto
 }: {
   loading: boolean;
   photo: File | null;
   photoError: string | null;
+  submitError: string | null;
   onPickPhoto: (f: File | null) => void;
   onClearPhoto: () => void;
 }) => {
@@ -270,6 +273,15 @@ const FormBody = ({
         <ErrorMessage name="termsAgreed" component="div" className={ERROR} />
       </div>
 
+      {submitError && (
+        <div
+          role="alert"
+          className="mt-6 rounded-lg border border-zart-error/30 bg-zart-error/5 px-4 py-3 text-sm text-zart-error"
+        >
+          {submitError}
+        </div>
+      )}
+
       <button
         type="submit"
         disabled={!(isValid && (dirty || restored)) || loading}
@@ -291,6 +303,7 @@ export const BookingForm = () => {
   const [done, setDone] = useState(false);
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
 
   const pickPhoto = (file: File | null) => {
@@ -350,6 +363,7 @@ export const BookingForm = () => {
             validationSchema={patronValidationSchema}
             onSubmit={async (values, { resetForm }) => {
               setLoading(true);
+              setSubmitError(null);
               try {
                 await submitPatronRequest(values, photo);
                 storageUtil.delete(STORAGE_KEY);
@@ -358,8 +372,18 @@ export const BookingForm = () => {
                 setPhotoError(null);
                 setDone(true);
                 scrollToSection();
-              } catch {
-                alert("Couldn't send your request. Please try again.");
+              } catch (err) {
+                const notConfigured =
+                  err instanceof Error &&
+                  err.message.includes("NEXT_PUBLIC_REQUEST_ENDPOINT");
+
+                const message = notConfigured
+                  ? "Requests aren't connected yet. See docs/apps-script/README.md to finish setup."
+                  : "We couldn't send your request. Check your connection and try again, or message us on WhatsApp.";
+
+                setSubmitError(message);
+                showToast(message, "error");
+                if (notConfigured) console.error(err);
               } finally {
                 setLoading(false);
               }
@@ -369,6 +393,7 @@ export const BookingForm = () => {
               loading={loading}
               photo={photo}
               photoError={photoError}
+              submitError={submitError}
               onPickPhoto={pickPhoto}
               onClearPhoto={() => {
                 setPhoto(null);
