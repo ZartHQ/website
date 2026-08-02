@@ -368,7 +368,7 @@ export const BookingForm = () => {
             Book an artisan
           </p>
           <h2 className="mb-3 mt-3 text-3xl font-bold leading-tight text-zart-ink md:text-[40px]">
-            Tell us what happened
+            Tell us what you need
           </h2>
           <p className="max-w-[46ch] text-lg text-zart-body">
             We&rsquo;ll message you on WhatsApp within minutes to confirm the details.
