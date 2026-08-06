@@ -8,7 +8,11 @@
  */
 
 // Everyone here gets an email for every request. Add or remove freely.
-var NOTIFY = ["zarttemp@gmail.com"];
+var NOTIFY = [
+  "zarttemp@gmail.com",
+  "ifedamoladaniel@gmail.com",
+  "ebuhwhitney@gmail.com"
+];
 
 var SHEET_NAME = "Requests";
 var DRIVE_FOLDER = "Zart request photos";
