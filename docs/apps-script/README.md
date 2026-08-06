@@ -16,7 +16,11 @@ notifies as many people as you like.
 4. **Check the notify list.** Line 12:
 
    ```js
-   var NOTIFY = ["zarttemp@gmail.com"];
+   var NOTIFY = [
+     "zarttemp@gmail.com",
+     "ifedamoladaniel@gmail.com",
+     "ebuhwhitney@gmail.com"
+   ];
    ```
 
    Add more addresses whenever you want — they all get every request.
@@ -42,6 +46,21 @@ notifies as many people as you like.
 
    Redeploy after adding it in Vercel — environment variables only apply to
    new builds.
+
+## Editing the notification list later
+
+This file is a reference copy. Changing it here does **not** change who
+gets emailed — the script that actually runs lives in the Apps Script
+editor attached to the sheet. To change the list:
+
+1. Open the sheet, then **Extensions -> Apps Script**
+2. Edit `NOTIFY` at the top of `Code.gs`
+3. **Deploy -> Manage deployments -> pencil -> Version: New version -> Deploy**
+
+Step 3 is required. Saving the file does not update the live endpoint.
+
+A Google Group address in `NOTIFY` avoids redeploying every time someone
+joins or leaves.
 
 ## Checking it works
 
