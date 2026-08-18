@@ -7,12 +7,20 @@
  * Setup instructions: see docs/apps-script/README.md in the website repo.
  */
 
-// Everyone here gets an email for every request. Add or remove freely.
-var NOTIFY = [
+/**
+ * Fallback recipients, used only if the Notify sheet is missing or empty.
+ *
+ * Prefer editing the "Notify" tab in the spreadsheet: changes there take
+ * effect immediately, with no redeploy. Editing this list requires a new
+ * deployment before it does anything.
+ */
+var FALLBACK_NOTIFY = [
   "zarttemp@gmail.com",
   "ifedamoladaniel@gmail.com",
   "ebuhwhitney@gmail.com"
 ];
+
+var NOTIFY_SHEET = "Notify";
 
 var SHEET_NAME = "Requests";
 var DRIVE_FOLDER = "Zart request photos";
@@ -126,8 +134,45 @@ function savePhoto(dataUrl, reference) {
   }
 }
 
+/**
+ * Reads recipients from the Notify tab, one address per row in column A.
+ * Creates the tab seeded with the fallback list the first time it runs, so
+ * the list becomes editable without ever touching this file again.
+ */
+function getRecipients() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(NOTIFY_SHEET);
+
+    if (!sheet) {
+      sheet = ss.insertSheet(NOTIFY_SHEET);
+      sheet.appendRow(["Email", "Notes"]);
+      sheet.getRange(1, 1, 1, 2).setFontWeight("bold");
+      sheet.setFrozenRows(1);
+      for (var i = 0; i < FALLBACK_NOTIFY.length; i++) {
+        sheet.appendRow([FALLBACK_NOTIFY[i], ""]);
+      }
+      sheet.getRange("D1").setValue(
+        "Add one email per row in column A. Changes apply immediately."
+      );
+      return FALLBACK_NOTIFY;
+    }
+
+    var values = sheet.getRange(2, 1, Math.max(sheet.getLastRow() - 1, 1), 1).getValues();
+    var emails = values
+      .map(function (row) { return String(row[0]).trim(); })
+      .filter(function (email) { return email.indexOf("@") > 0; });
+
+    return emails.length ? emails : FALLBACK_NOTIFY;
+  } catch (err) {
+    console.error("Could not read the Notify sheet: " + err);
+    return FALLBACK_NOTIFY;
+  }
+}
+
 function notify(data, reference, photoUrl, received) {
-  if (!NOTIFY.length) return;
+  var recipients = getRecipients();
+  if (!recipients.length) return;
 
   var trades = (data.artisanTypes || []).join(", ");
   var whatsapp = "https://wa.me/" + String(data.phoneNumber).replace(/[^0-9]/g, "").replace(/^0/, "234");
@@ -177,7 +222,7 @@ function notify(data, reference, photoUrl, received) {
     "</div>";
 
   MailApp.sendEmail({
-    to: NOTIFY.join(","),
+    to: recipients.join(","),
     subject: subject,
     htmlBody: html,
     replyTo: data.email,

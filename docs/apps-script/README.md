@@ -47,20 +47,18 @@ notifies as many people as you like.
    Redeploy after adding it in Vercel — environment variables only apply to
    new builds.
 
-## Editing the notification list later
+## Who gets notified
 
-This file is a reference copy. Changing it here does **not** change who
-gets emailed — the script that actually runs lives in the Apps Script
-editor attached to the sheet. To change the list:
+Recipients live in a **Notify** tab in the spreadsheet, one email per row
+in column A. The tab is created automatically the first time a request
+comes in, seeded with the addresses in `FALLBACK_NOTIFY`.
 
-1. Open the sheet, then **Extensions -> Apps Script**
-2. Edit `NOTIFY` at the top of `Code.gs`
-3. **Deploy -> Manage deployments -> pencil -> Version: New version -> Deploy**
+**To add or remove someone, type in that tab.** It takes effect on the
+next request. No code change, no redeploy.
 
-Step 3 is required. Saving the file does not update the live endpoint.
-
-A Google Group address in `NOTIFY` avoids redeploying every time someone
-joins or leaves.
+`FALLBACK_NOTIFY` in `Code.gs` is only used if the tab is missing or has
+no valid addresses in it. Editing that list does require a redeploy,
+which is exactly the trap this is designed to avoid.
 
 ## Checking it works
 
