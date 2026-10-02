@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/providers";
 
-const outfit = Outfit({
+// Self-hosted Outfit (same files as the mobile app) so the site builds and
+// runs with no network dependency on Google Fonts.
+const outfit = localFont({
   variable: "--font-outfit",
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap"
+  display: "swap",
+  src: [
+    { path: "./fonts/Outfit-Regular.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/Outfit-Medium.ttf", weight: "500", style: "normal" },
+    { path: "./fonts/Outfit-SemiBold.ttf", weight: "600", style: "normal" },
+    { path: "./fonts/Outfit-Bold.ttf", weight: "700", style: "normal" }
+  ]
 });
 
 export const metadata: Metadata = {
