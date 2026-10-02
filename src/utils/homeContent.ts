@@ -97,6 +97,30 @@ export const SERVICES = [
   { name: "Cleaning", examples: "Deep cleans, post-construction, move-in and out" }
 ];
 
+/** The four headline services, shown as the app's colourful illustrated cards. */
+export const SERVICE_CARDS = [
+  { name: "Carpenter", img: "/services/carpenter.svg", accent: "#FA4812" },
+  { name: "Electrician", img: "/services/electrician.svg", accent: "#115746" },
+  { name: "Cleaner", img: "/services/cleaner.svg", accent: "#1E5A8E" },
+  { name: "Plumber", img: "/services/plumber.svg", accent: "#7D76B2" }
+];
+
+/** Common one-tap jobs, echoing the app's "Popular jobs" chips. */
+export const POPULAR_JOBS = [
+  { label: "Leak repair", emoji: "💧", accent: "#7D76B2" },
+  { label: "Faulty wiring", emoji: "⚡", accent: "#115746" },
+  { label: "Furniture repair", emoji: "🪑", accent: "#FA4812" },
+  { label: "Deep cleaning", emoji: "🧽", accent: "#1E5A8E" },
+  { label: "Clogged drain", emoji: "🪠", accent: "#7D76B2" },
+  { label: "Install socket", emoji: "🔌", accent: "#115746" },
+  { label: "Fix a door", emoji: "🚪", accent: "#FA4812" },
+  { label: "Fumigation", emoji: "🦟", accent: "#1E5A8E" },
+  { label: "Water heater", emoji: "🚿", accent: "#7D76B2" },
+  { label: "Ceiling fan", emoji: "🌀", accent: "#115746" },
+  { label: "Wardrobe install", emoji: "🗄️", accent: "#FA4812" },
+  { label: "Move-out cleaning", emoji: "📦", accent: "#1E5A8E" }
+];
+
 export const OBJECTIONS = [
   {
     quote: "I paid him half upfront and never saw him again.",
