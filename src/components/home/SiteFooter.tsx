@@ -8,6 +8,7 @@ import { SOCIAL_LINKS } from "@/utils/launchContent";
 const EXPLORE = [
   { label: "How it works", href: "/#how" },
   { label: "What you can get done", href: "/#services" },
+  { label: "Book an artisan", href: "/patrons/form" },
   { label: "For artisans", href: "/artisans/form" }
 ];
 
