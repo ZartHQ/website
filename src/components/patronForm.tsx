@@ -5,6 +5,7 @@ import { Button } from "./button";
 import request from "@/utils/api";
 import storageUtil from "@/utils/browser-storage";
 import { CheckCircle } from "lucide-react";
+import Link from "next/link";
 
 const areasData = {
   "Lagos Mainland": [
@@ -508,21 +509,17 @@ const PatronForm = () => {
                   />
                   <label className="text-[#515152] text-sm leading-relaxed">
                     By clicking Submit, you agree to{" "}
-                    <a
-                      href="https://drive.google.com/file/d/1M9LLKWNMrVMMwOoUrCt68bZzGkTUSY81/view"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Link
+                      href="/legal/terms"
                       className="text-blue-600 hover:underline font-semibold">
                       Zart's Terms & Conditions
-                    </a>{" "}
+                    </Link>{" "}
                     and{" "}
-                    <a
-                      href="https://drive.google.com/file/d/1pXzVfRNZBxWPaaiMKSWrlhEq6Ue6PXsn/view"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Link
+                      href="/legal/privacy"
                       className="text-blue-600 hover:underline font-semibold">
                       Privacy Policy
-                    </a>
+                    </Link>
                   </label>
                 </div>
                 <ErrorMessage name="termsAgreed" component="div" className="text-[#B42318] mt-2 text-sm" />
