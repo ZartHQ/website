@@ -44,3 +44,6 @@ build and serve the `out` directory.
 
 Use `npm start` to preview the exported site locally on port 3001. The
 `public/_redirects` file keeps the old `/patrons` URL working after the export.
+
+This repo uses npm (`package-lock.json`). Do not add a `yarn.lock`; Cloudflare
+detects Yarn from that file and will try to migrate it during the build.
