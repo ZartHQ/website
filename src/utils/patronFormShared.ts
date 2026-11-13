@@ -46,13 +46,6 @@ export const HEARD_OPTIONS = [
   "Friend or Referral", "WhatsApp", "Other (please specify)"
 ];
 
-export const TERMS_URL =
-  "https://drive.google.com/file/d/1M9LLKWNMrVMMwOoUrCt68bZzGkTUSY81/view?usp=drive_link";
-export const PRIVACY_URL =
-  "https://drive.google.com/file/d/1pXzVfRNZBxWPaaiMKSWrlhEq6Ue6PXsn/view?usp=sharing";
-export const REFUND_URL =
-  "https://docs.google.com/document/d/1x1RkV6Tk_xtcYEPg-iWRW4H1i-I3dWr6/edit?usp=sharing&ouid=117274641844192403999&rtpof=true&sd=true";
-
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export const getTomorrow = () => {

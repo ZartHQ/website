@@ -1,47 +1,32 @@
 import Link from "next/link";
-import { ArtisanIllustration } from "./ArtisanIllustration";
-
-const BENEFITS = [
-  "Jobs matched to your trade and your side of Lagos",
-  "We agree the price with the customer, not you",
-  "Paid on completion, every job — we keep 10%",
-  "Free to join, no subscription"
-];
+import { ArrowUpRight } from "lucide-react";
 
 export const ForArtisans = () => (
-  <section id="artisans" className="pb-12 md:pb-20">
+  <section id="artisans" className="scroll-mt-20 py-16 md:py-20">
     <div className="mx-auto max-w-6xl px-4 md:px-8">
-      <div className="overflow-hidden rounded-xl bg-zart-green text-white">
-        <div className="grid items-center gap-8 p-8 pb-0 md:grid-cols-[1.1fr_0.9fr] md:gap-14 md:p-14 md:pb-0">
-          <div>
-            <p className="font-outfit text-[11px] uppercase tracking-[0.14em] text-white/60">
-              For artisans
-            </p>
-            <h2 className="mb-4 mt-3 text-3xl font-bold leading-tight md:text-4xl">
-              Looking for customers? We go run am.
-            </h2>
-            <p className="max-w-[44ch] text-[16.5px] text-white/85">
-              Zart brings you jobs near you and handles the customer, the pricing and the
-              invoice, so you can get on with the work.
-            </p>
-            <Link
-              href="/artisans/form"
-              className="mt-6 inline-block rounded-lg bg-white px-7 py-3.5 font-semibold text-zart-green transition hover:-translate-y-px hover:bg-zart-mist"
-            >
-              Sign up as an artisan
-            </Link>
-          </div>
-          <ul className="grid gap-3 md:pb-14">
-            {BENEFITS.map((b) => (
-              <li key={b} className="flex items-start gap-3 text-[15.5px]">
-                <span className="font-bold">&#10003;</span>
-                {b}
-              </li>
-            ))}
-          </ul>
+      <div className="relative overflow-hidden rounded-2xl bg-zart-green px-6 py-10 text-white sm:px-10 md:flex md:items-center md:justify-between md:gap-12 md:px-14 md:py-12">
+        <div
+          aria-hidden
+          className="absolute -right-14 -top-14 h-44 w-44 rounded-full border-[14px] border-white/10"
+        />
+        <div className="relative">
+          <p className="font-outfit text-[11px] uppercase tracking-[0.16em] text-zart-gold">
+            For artisans
+          </p>
+          <h2 className="mt-3 text-2xl font-bold leading-tight tracking-[-0.01em] md:text-[32px]">
+            Are you an artisan?
+          </h2>
+          <p className="mt-2 max-w-[52ch] text-[16px] leading-relaxed text-white/80">
+            Join Zart and connect with people who need your skills.
+          </p>
         </div>
-
-        <ArtisanIllustration />
+        <Link
+          href="/artisans/form"
+          className="relative mt-7 inline-flex min-h-[44px] w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-zart-gold px-6 py-3 font-semibold text-zart-ink transition hover:-translate-y-0.5 hover:bg-white md:mt-0 md:w-auto"
+        >
+          Join Zart
+          <ArrowUpRight className="h-4 w-4" aria-hidden />
+        </Link>
       </div>
     </div>
   </section>
