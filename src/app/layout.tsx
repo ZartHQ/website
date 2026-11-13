@@ -17,32 +17,32 @@ const outfit = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Zart – Artisans you can trust",
+  metadataBase: new URL("https://zarthq.com"),
+  title: "Zart – Skilled artisans, one tap away",
   description:
-    "Book vetted artisans like plumbers, electricians, and carpenters near you. No stress, no scams – just reliable home services from Zart.",
+    "Download the Zart app to find verified carpenters, electricians, cleaners and plumbers. Describe the job, pick a time, and track it to done.",
   applicationName: "Zart",
   formatDetection: {
     telephone: true
   },
   keywords: [
-    "vetted artisans",
-    "trusted artisans in Nigeria",
-    "book plumbers in Lagos",
-    "electricians near me",
     "Zart app",
-    "home repair services Nigeria",
-    "artisan marketplace Africa",
-    "find service providers",
-    "no scam artisans"
+    "verified artisans",
+    "find artisans in Nigeria",
+    "home repair app",
+    "book plumbers",
+    "electricians near me",
+    "cleaning services app",
+    "artisan app Nigeria"
   ],
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://zarthq.com/",
     siteName: "Zart",
-    title: "Zart – Artisans you can trust",
+    title: "Zart – Skilled artisans, one tap away",
     description:
-      "Book vetted artisans like plumbers, electricians, and carpenters near you. No stress, no scams – just reliable home services from Zart.",
+      "Download the Zart app to find verified carpenters, electricians, cleaners and plumbers. Describe the job, pick a time, and track it to done.",
     images: [
       {
         url: "https://res.cloudinary.com/dqx8jfcj0/image/upload/v1747082032/IMG_6303_zb1w5i.jpg",
@@ -59,9 +59,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "https://zarthq.com/",
     creator: "@zarthq",
-    title: "Zart – Artisans you can trust",
+    title: "Zart – Skilled artisans, one tap away",
     description:
-      "Book reliable, vetted artisans for your home or office – no stress, no scams.",
+      "Download the Zart app to find verified artisans for the jobs around your home.",
     images:
       "https://res.cloudinary.com/dqx8jfcj0/image/upload/v1747082032/IMG_6303_zb1w5i.jpg"
   },
